@@ -7,8 +7,8 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 
 #creates game board
 board = []
-WHITE = True
-BLACK = False
+WHITE = 1
+BLACK = 0
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
 INIT_SEQUENCE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
@@ -30,16 +30,7 @@ for y, rank in enumerate(INIT_SEQUENCE.split("/")):
       x += int(piece)
     else:
       temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = [x, y])
-  board.append(temp_rank_list)  
-
-for rank in board:
-  for piece in rank:
-    print(piece)
-  
-  
-  
-  
-  
-  
     
-  
+    board.append(temp_rank_list)
+
+print(board)
