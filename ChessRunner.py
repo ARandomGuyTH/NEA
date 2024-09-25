@@ -1,7 +1,18 @@
 import pygame
-
+import pieces
+#creates game UI
 pygame.init()
-size = (800, 800)
+SCREEN_SIZE = (800, 800)
+screen = pygame.display.set_mode(SCREEN_SIZE)
 
-screen = pygame.display.set_mode(size)
-
+#creates game board
+board = [
+  [],
+  [pieces.],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+]
