@@ -1,14 +1,17 @@
 import pygame
+import sys
 import pieces
+
 #creates game UI
 pygame.init()
-SCREEN_SIZE = (800, 800)
+SCREEN_SIZE = (600, 600)
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
 #creates game board
 board = []
 WHITE = True
 BLACK = False
+
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
 INIT_SEQUENCE = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
@@ -20,6 +23,7 @@ SEQUENCE_MAP = {
   "k" : pieces.Knight,
   "p" : pieces.Pawn
 }
+
 #position is (x,y) or (rank, file)
 #iterates through the ranks
 for y, rank in enumerate(INIT_SEQUENCE.split("/")):
@@ -32,14 +36,12 @@ for y, rank in enumerate(INIT_SEQUENCE.split("/")):
       temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = [x, y])
   board.append(temp_rank_list)  
 
-for rank in board:
-  for piece in rank:
-    print(piece)
+
+#game loop
+while True:
   
-  
-  
-  
-  
-  
+  #checks if a player has exited the game
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      sys.exit()
     
-  
