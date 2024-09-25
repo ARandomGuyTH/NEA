@@ -1,7 +1,7 @@
 class Piece:
-  def __init__(self, colour):
+  def __init__(self, colour, position):
     self.colour = colour
-
+    self.position = position
 class Pawn(Piece):
   pass
 
