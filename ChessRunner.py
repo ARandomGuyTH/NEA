@@ -17,8 +17,8 @@ SEQUENCE_MAP = {
   "n" : pieces.Knight,
   "b" : pieces.Bishop,
   "q" : pieces.Queen,
-  "k" : Pieces.Knight,
-  "b" : Pieces.Bishop
+  "k" : pieces.Knight,
+  "b" : pieces.Bishop
 }
 #position is (x,y) or (rank, file)
 #iterates through the ranks
