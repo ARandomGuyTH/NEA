@@ -17,12 +17,6 @@ def create_board(FEN):
     board.append(temp_rank_list)   
   return board
 
-
-#creates game UI
-pygame.init()
-SCREEN_SIZE = (600, 600)
-screen = pygame.display.set_mode(SCREEN_SIZE)
-
 #creates game board
 WHITE = True
 BLACK = False
