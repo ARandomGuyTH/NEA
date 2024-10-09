@@ -4,7 +4,8 @@ class Piece:
     self.position = position
   
   def __str__(self):
-    return f"{self.colour} {self.__class__}"
+    return if self.colour: "white" else: "black", {self.__class__}"
+    
 class Pawn(Piece):
   pass
 
