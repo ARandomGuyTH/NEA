@@ -5,7 +5,7 @@ def create_board(FEN):
   board = []
   #position is (x,y) or (rank, file)
   #iterates through the ranks
-  for y, rank in enumerate(INIT_SEQUENCE.split("/")):
+  for y, rank in enumerate(FEN.split("/")):
     temp_rank_list = [None for x in range(8)]
     #iterates through the individual pieces
     for x, piece in enumerate(rank):
