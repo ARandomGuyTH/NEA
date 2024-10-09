@@ -1,5 +1,6 @@
 import pieces
 
+#function takes in FEN notation as input and creates a game board using it
 def create_board(FEN):
   board = []
   #position is (x,y) or (rank, file)
@@ -16,6 +17,13 @@ def create_board(FEN):
         temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = [x, y])
     board.append(temp_rank_list)   
   return board
+
+#takes in the board as input and displays it in text form (used for testing)
+def print_board(board):
+  for rank in board:
+    for piece in rank:
+      print(piece, end="|")
+    print()
 
 #creates game board
 WHITE = True
