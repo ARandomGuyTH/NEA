@@ -14,7 +14,7 @@ def create_board(FEN):
         x += int(piece)
       else:
         #creates and object if upper case piece is white
-        temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = [x, y])
+        temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = (x, y))
     board.append(temp_rank_list)   
   return board
 
