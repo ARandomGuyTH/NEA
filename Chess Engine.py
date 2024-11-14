@@ -1,5 +1,10 @@
 import pieces
 
+  
+#FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
+#White pieces are uppercase, black pieces are lower case
+INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
 class Board:
   def __init__(self, FEN):
     #Colour represented as a boolean
@@ -54,10 +59,6 @@ class Board:
     """
     self.board[move[0][0]][move[0][1]], self.board[move[1][1]][move[1][0]] = self.board[move[1][1]][move[1][0]], self.board[move[0][0]][move[0][1]]
 
-  
-#FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
-#White pieces are uppercase, black pieces are lower case
-INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
 board = Board(INIT_SEQUENCE)
 
