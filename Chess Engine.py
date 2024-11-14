@@ -59,10 +59,11 @@ class Board:
     """
     self.board[move[0][0]][move[0][1]], self.board[move[1][1]][move[1][0]] = self.board[move[1][1]][move[1][0]], self.board[move[0][0]][move[0][1]]
 
+def main():
+  print("hi")
+  board = Board(INIT_SEQUENCE)
 
-board = Board(INIT_SEQUENCE)
+  board.print_board()
 
-board.print_board()
-
-board.update_board(((1,1), (1,3)))
-board.print_board()
+if __name__ == "__main__":
+  main()
