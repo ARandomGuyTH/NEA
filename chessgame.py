@@ -50,7 +50,7 @@ def draw_board():
     row = []
     for j in range(8):
       #creates rectangle
-      square_position_x, square_position_y = j * square_size, i * square_size,
+      square_position_x, square_position_y = j * square_size, i * square_size
       rect = pygame.Rect(square_position_x, square_position_y, square_size, square_size)
       #draws the rectangle onto the screen.
       pygame.draw.rect(screen, white_square_colour if (i + j) % 2 == 0 else black_square_colour, rect)
