@@ -43,6 +43,9 @@ IMAGE_MAP = {
 
 
 def draw_board():
+  """
+  RN I think this might be innefficient to make the squares every time when I can make them once at the start.
+  """
   #creates the squares on the board
   square_size = WIDTH / 8
   squares = []
