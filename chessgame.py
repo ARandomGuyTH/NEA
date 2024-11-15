@@ -20,8 +20,8 @@ background_rect = background.get_rect(topleft=(0,0))
 background.fill("white")
 
 #square colours
-black_square_colour = (150, 77, 55)
-white_square_colour = (255, 233, 197)
+BLACK_SQUARE_COLOUR = (150, 77, 55)
+WHITE_SQUARE_COLOUR = (255, 233, 197)
 
 
 #Sequence map used for getting images using FEN. Maps every character to a image filepath.
@@ -56,12 +56,12 @@ def draw_board():
       square_position_x, square_position_y = j * square_size, i * square_size
       rect = pygame.Rect(square_position_x, square_position_y, square_size, square_size)
       #draws the rectangle onto the screen.
-      pygame.draw.rect(screen, white_square_colour if (i + j) % 2 == 0 else black_square_colour, rect)
+      pygame.draw.rect(screen, WHITE_SQUARE_COLOUR if (i + j) % 2 == 0 else BLACK_SQUARE_COLOUR, rect)
 
       #draws the pieces onto the board
       if not chess_board.board[i][j] == None:
         #finds the image from the IMAGE_MAP dictionary
-        piece_image = IMAGE_MAP[chess_board.board[i][j].FENkey]
+        piece_image = IMAGE_MAP[chess_board.board[i][j].FENKEY]
         #draws the image onto the screen
         screen.blit(piece_image, (square_position_x + 6, square_position_y + 6))
 

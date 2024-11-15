@@ -3,7 +3,7 @@ import pieces
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
-default_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+DEFAULT_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
 #Colour represented as a boolean
 WHITE = True

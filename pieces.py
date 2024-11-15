@@ -1,9 +1,9 @@
 #default class that all pieces inherit from
 class Piece:
   def __init__(self, colour : bool, position : list, FENkey : chr):
-    self.colour = colour #piece colour
+    self.COLOUR = colour #piece colour
     self.position = position #keeps track of the position of the piece on the board
-    self.FENkey = FENkey
+    self.FENKEY = FENkey
 
   def __str__(self):
     #determines the colour of the piece
