@@ -3,16 +3,17 @@ import pieces
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
-INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+default_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
+#Colour represented as a boolean
+WHITE = True
+BLACK = False
 
 
 class Board:
-  def __init__(self, FEN):
-    #Colour represented as a boolean
-    self.WHITE = True
-    self.BLACK = False
+  def __init__(self, FEN: str):
 
-    #Sequence map used for creating the boards using FEN
+    #Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
     self.SEQUENCE_MAP = {
       "r" : pieces.Rook,
       "n" : pieces.Knight,
@@ -22,6 +23,7 @@ class Board:
       "p" : pieces.Pawn
     }
 
+    #creates board
     self.board = self.create_board(FEN)
 
   #function takes in FEN notation as input and creates a game board using it
