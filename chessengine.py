@@ -9,12 +9,8 @@ default_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 WHITE = True
 BLACK = False
 
-
-class Board:
-  def __init__(self, FEN: str):
-
-    #Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
-    self.SEQUENCE_MAP = {
+#Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
+SEQUENCE_MAP = {
       "r" : pieces.Rook,
       "n" : pieces.Knight,
       "b" : pieces.Bishop,
@@ -22,6 +18,9 @@ class Board:
       "k" : pieces.King,
       "p" : pieces.Pawn
     }
+
+class Board:
+  def __init__(self, FEN: str):
 
     #creates board
     self.board = self.create_board(FEN)
@@ -40,7 +39,7 @@ class Board:
           x += int(piece)
         else:
           #creates and object if upper case piece is white
-          temp_rank_list[x] = self.SEQUENCE_MAP[piece.lower()](colour = piece.isupper(), position = (x, y))
+          temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](piece.isupper(), (x, y), piece)
       board.append(temp_rank_list)   
     return board
 

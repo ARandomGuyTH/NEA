@@ -19,6 +19,28 @@ background = pygame.Surface((600,600))
 background_rect = background.get_rect(topleft=(0,0))
 background.fill("white")
 
+#square colours
+black_square_colour = (150, 77, 55)
+white_square_colour = (255, 233, 197)
+
+
+#Sequence map used for getting images using FEN. Maps every character to a image filepath.
+#functions are called once at start I think not every time.
+IMAGE_MAP = {
+  "r" : pygame.image.load("assets/blackrook.png").convert_alpha(),
+  "n" : pygame.image.load("assets/blackknight.png").convert_alpha(),
+  "b" : pygame.image.load("assets/blackbishop.png").convert_alpha(),
+  "q" : pygame.image.load("assets/blackqueen.png").convert_alpha(),
+  "k" : pygame.image.load("assets/blackking.png").convert_alpha(),
+  "p" : pygame.image.load("assets/blackpawn.png").convert_alpha(),
+  "R" : pygame.image.load("assets/whiterook.png").convert_alpha(),
+  "N" : pygame.image.load("assets/whiteknight.png").convert_alpha(),
+  "B" : pygame.image.load("assets/whitebishop.png").convert_alpha(),
+  "Q" : pygame.image.load("assets/whitequeen.png").convert_alpha(),
+  "K" : pygame.image.load("assets/whiteking.png").convert_alpha(),
+  "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
+}
+
 
 def draw_board():
   #creates the squares on the board
@@ -28,12 +50,17 @@ def draw_board():
     row = []
     for j in range(8):
       #creates rectangle
-      rect = pygame.Rect( j * square_size, i * square_size, square_size, square_size)
-      #draws the rectangle onto the screen
-      pygame.draw.rect(screen, "white" if (i + j) % 2 == 0 else "black", rect)
-  
+      square_position_x, square_position_y = j * square_size, i * square_size,
+      rect = pygame.Rect(square_position_x, square_position_y, square_size, square_size)
+      #draws the rectangle onto the screen.
+      pygame.draw.rect(screen, white_square_colour if (i + j) % 2 == 0 else black_square_colour, rect)
+
       #draws the pieces onto the board
-      
+      if not chess_board.board[i][j] == None:
+        #finds the image from the IMAGE_MAP dictionary
+        piece_image = IMAGE_MAP[chess_board.board[i][j].FENkey]
+        #draws the image onto the screen
+        screen.blit(piece_image, (square_position_x + 6, square_position_y + 6))
 
 
 def main():
@@ -45,6 +72,7 @@ def main():
             if event.type == pygame.QUIT:
                 exit()
         
+        screen.fill("white")
         draw_board()
 
 
