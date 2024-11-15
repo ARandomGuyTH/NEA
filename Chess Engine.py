@@ -5,6 +5,7 @@ import pieces
 #White pieces are uppercase, black pieces are lower case
 INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
+
 class Board:
   def __init__(self, FEN):
     #Colour represented as a boolean
@@ -45,7 +46,7 @@ class Board:
   def print_board(self):
     for rank in self.board:
       for piece in rank:
-        print(piece, end="|")
+        print(piece, end=" | ")
       print()
   
   #given a move ((x,y), (x,y)) move that piece
@@ -60,6 +61,7 @@ class Board:
     self.board[move[0][0]][move[0][1]], self.board[move[1][1]][move[1][0]] = self.board[move[1][1]][move[1][0]], self.board[move[0][0]][move[0][1]]
 
 def main():
+  INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
   board = Board(INIT_SEQUENCE)
   board.print_board()
 
