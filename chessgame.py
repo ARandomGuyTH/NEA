@@ -3,7 +3,7 @@ from sys import exit
 import pygame
 
 #creates a board object
-chess_board = chessengine.Board(chessengine.default_FEN)
+chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
 
 #creates game screen
 pygame.init()
@@ -57,6 +57,8 @@ def draw_board():
       rect = pygame.Rect(square_position_x, square_position_y, square_size, square_size)
       #draws the rectangle onto the screen.
       pygame.draw.rect(screen, WHITE_SQUARE_COLOUR if (i + j) % 2 == 0 else BLACK_SQUARE_COLOUR, rect)
+      #appends it to the row for using later.
+      row.append(rect)
 
       #draws the pieces onto the board
       if not chess_board.board[i][j] == None:
@@ -64,7 +66,10 @@ def draw_board():
         piece_image = IMAGE_MAP[chess_board.board[i][j].FENKEY]
         #draws the image onto the screen
         screen.blit(piece_image, (square_position_x + 6, square_position_y + 6))
-
+      
+    #squares is a 2D array containing all the squares. This can be used for checking mouse collision.
+    squares.append(row)
+  return squares
 
 def main():
     #game loop
@@ -74,9 +79,18 @@ def main():
             #checks if the player has exited the game
             if event.type == pygame.QUIT:
                 exit()
+            #checks for mouse clicks
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+              pos = pygame.mouse.get_pos()
+              for i in range(8):
+                for j in range(8):
+                  if squares[i][j].collidepoint(pos):
+                    print(chess_board.board[i][j])
+
+
         
         screen.fill("white")
-        draw_board()
+        squares = draw_board()
 
 
         pygame.display.update()

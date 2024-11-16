@@ -1,2 +1,2 @@
 # NEA
-Computer Science NEA
+A level OCR Computer Science NEA

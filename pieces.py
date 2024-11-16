@@ -7,7 +7,7 @@ class Piece:
 
   def __str__(self):
     #determines the colour of the piece
-    if self.colour:
+    if self.COLOUR:
       colour = "white"
     else:
       colour = "black"
