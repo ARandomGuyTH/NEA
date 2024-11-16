@@ -52,14 +52,16 @@ class Board:
   
   #given a move ((x,y), (x,y)) move that piece
   #move should be a tuple of 2 tuples. First tuple
-  def update_board(self, move):
+  def update_board(self, movefrom, moveto):
     """
-    given a move ((x,y), (x,y)) move that piece.
-    move should be a tuple of 2 tuples.
+    given a move (x,y), (x,y) move that piece.
+    moves should be tuples
     First tuple, coord of piece to move. Second, coord of square to move it to.
     top left 0,0. bottom right 8,8.
     """
-    self.board[move[0][0]][move[0][1]], self.board[move[1][1]][move[1][0]] = self.board[move[1][1]][move[1][0]], self.board[move[0][0]][move[0][1]]
+    mofrx, mofry = movefrom
+    motox, motoy = moveto
+    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
 
 def main():
   INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"

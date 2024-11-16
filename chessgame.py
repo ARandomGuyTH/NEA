@@ -14,15 +14,12 @@ screen.fill("white")
 #clock used for timing
 clock = pygame.time.Clock()
 
-#blank background 
-background = pygame.Surface((600,600))
-background_rect = background.get_rect(topleft=(0,0))
-background.fill("white")
-
 #square colours
 BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
 
+#essential variables
+can_move = False #checks if a piece can move or not
 
 #Sequence map used for getting images using FEN. Maps every character to a image filepath.
 #functions are called once at start I think not every time.
@@ -40,7 +37,6 @@ IMAGE_MAP = {
   "K" : pygame.image.load("assets/whiteking.png").convert_alpha(),
   "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
 }
-
 
 def draw_board():
   """
@@ -72,6 +68,7 @@ def draw_board():
   return squares
 
 def main():
+    can_move = False #checks if a piece can move or not
     #game loop
     while True:
         #checks for player inputs
@@ -85,7 +82,13 @@ def main():
               for i in range(8):
                 for j in range(8):
                   if squares[i][j].collidepoint(pos):
-                    print(chess_board.board[i][j])
+                    if can_move:
+                       moveto = (i, j)
+                       chess_board.update_board(movefrom, moveto)
+                       can_move = False
+                    else:
+                      movefrom = (i, j)
+                      can_move = True
 
 
         
