@@ -9,6 +9,9 @@ DEFAULT_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 WHITE = True
 BLACK = False
 
+#by default white goes first (chess rule)
+turn = WHITE
+
 #Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
 SEQUENCE_MAP = {
       "r" : pieces.Rook,
