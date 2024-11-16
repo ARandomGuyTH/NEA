@@ -20,13 +20,18 @@ SEQUENCE_MAP = {
     }
 
 class Board:
+  """
+  Board class 
+  """
   def __init__(self, FEN: str):
 
     #creates board
     self.board = self.create_board(FEN)
 
-  #function takes in FEN notation as input and creates a game board using it
-  def create_board(self, FEN):
+  def create_board(self, FEN : str) -> list:
+    """
+    Takes in FEN as input. Returns the appropriate Board as a 2D list.
+    """
     board = []
     #position is (x,y) or (rank, file)
     #iterates through the ranks
@@ -44,26 +49,31 @@ class Board:
     return board
 
   #takes in the board as input and displays it in text form (used for testing)
-  def print_board(self):
+  def print_board(self) -> None:
+    """
+    prints the board as text.
+    """
     for rank in self.board:
       for piece in rank:
         print(piece, end=" | ")
       print()
   
-  #given a move ((x,y), (x,y)) move that piece
-  #move should be a tuple of 2 tuples. First tuple
-  def update_board(self, movefrom, moveto):
+  #currently if you click weirdly pieces can dissapear. But, input validation may fix this.
+  def update_board(self, movefrom : tuple, moveto : tuple) -> None:
     """
     given a move (x,y), (x,y) move that piece.
     moves should be tuples
-    First tuple, coord of piece to move. Second, coord of square to move it to.
+    First tuple, coord of square containing piece to move. Second, coord of square to move it to.
     top left 0,0. bottom right 8,8.
     """
     mofrx, mofry = movefrom
     motox, motoy = moveto
     self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
 
-def main():
+def main() -> None:
+  """
+  main function for testing.
+  """
   INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
   board = Board(INIT_SEQUENCE)
   board.print_board()

@@ -19,7 +19,7 @@ BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
 
 #essential variables
-can_move = False #checks if a piece can move or not
+
 
 #Sequence map used for getting images using FEN. Maps every character to a image filepath.
 #functions are called once at start I think not every time.
@@ -38,9 +38,12 @@ IMAGE_MAP = {
   "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
 }
 
-def draw_board():
+#This may be innefficient as I may be calling the load function every time?
+#furthermore I can create the squares once, not every frame.
+def draw_board() -> list:
   """
-  RN I think this might be innefficient to make the squares every time when I can make them once at the start.
+  Creates and then draws all the squares and pieces.
+  Then returns a 2D array containing all the squares as pygame rects.
   """
   #creates the squares on the board
   square_size = WIDTH / 8
@@ -67,10 +70,13 @@ def draw_board():
     squares.append(row)
   return squares
 
-def main():
-    can_move = False #checks if a piece can move or not
-    #game loop
-    while True:
+def main() -> None:
+  """
+  Main function where the gameloop is held
+  """
+  can_move = False #checks if a piece can move or not
+  #game loop
+  while True:
         #checks for player inputs
         for event in pygame.event.get():
             #checks if the player has exited the game
