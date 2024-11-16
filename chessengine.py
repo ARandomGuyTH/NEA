@@ -58,17 +58,26 @@ class Board:
         print(piece, end=" | ")
       print()
   
-  #currently if you click weirdly pieces can dissapear. But, input validation may fix this.
-  def update_board(self, movefrom : tuple, moveto : tuple) -> None:
+  def update_board(self, movefrom : tuple, moveto : tuple) -> bool:
     """
     given a move (x,y), (x,y) move that piece.
     moves should be tuples
     First tuple, coord of square containing piece to move. Second, coord of square to move it to.
     top left 0,0. bottom right 8,8.
     """
+    #unpacks tuple for x and y coords
     mofrx, mofry = movefrom
     motox, motoy = moveto
-    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
+    #checks if a piece is in that spot
+    if not self.board[mofrx][mofry] is None:
+      #swaps the pieces positions and updates the piece object
+      self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
+      self.board[motox][motoy].position = (motox, motoy)
+      self.board[motox][motoy].has_moved = True
+
+      return True
+    #returning bool if it has happened may be useful?
+    return False
 
 def main() -> None:
   """

@@ -95,8 +95,6 @@ def main() -> None:
                     else:
                       movefrom = (i, j)
                       can_move = True
-
-
         
         screen.fill("white")
         squares = draw_board()
