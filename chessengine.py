@@ -41,13 +41,15 @@ class Board:
     for y, rank in enumerate(FEN.split("/")):
       temp_rank_list = [None for x in range(8)]
       #iterates through the individual pieces
-      for x, piece in enumerate(rank):
+      x = 0
+      for piece in enumerate(rank):
         #checks if a piece or value
         if piece.isnumeric():
           x += int(piece)
         else:
           #creates and object if upper case piece is white
           temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](piece.isupper(), (x, y), piece)
+          x += 1
       board.append(temp_rank_list)   
     return board
 
