@@ -42,7 +42,7 @@ class Board:
       temp_rank_list = [None for x in range(8)]
       #iterates through the individual pieces
       x = 0
-      for piece in enumerate(rank):
+      for piece in rank:
         #checks if a piece or value
         if piece.isnumeric():
           x += int(piece)
