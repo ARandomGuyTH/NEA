@@ -17,8 +17,10 @@ clock = pygame.time.Clock()
 #square colours
 BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
+HIGHLIGHTED_SQUARE_COLOUR = (229, 212, 98)
 
 #essential variables
+square_rect = None
 
 
 #Sequence map used for getting images using FEN. Maps every character to a image filepath.
@@ -58,7 +60,17 @@ def draw_board() -> list:
       pygame.draw.rect(screen, WHITE_SQUARE_COLOUR if (i + j) % 2 == 0 else BLACK_SQUARE_COLOUR, rect)
       #appends it to the row for using later.
       row.append(rect)
+  
+    #squares is a 2D array containing all the squares. This can be used for checking mouse collision.
+    squares.append(row)
 
+  #highlights any selected pieces
+  if not square_rect is None:
+    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
+  
+  for i in range(8):
+    for j in range(8):
+      square_position_x, square_position_y = j * square_size, i * square_size
       #draws the pieces onto the board
       if not chess_board.board[i][j] == None:
         #finds the image from the IMAGE_MAP dictionary
@@ -66,8 +78,6 @@ def draw_board() -> list:
         #draws the image onto the screen
         screen.blit(piece_image, (square_position_x + 6, square_position_y + 6))
       
-    #squares is a 2D array containing all the squares. This can be used for checking mouse collision.
-    squares.append(row)
   return squares
 
 def main() -> None:
@@ -75,6 +85,7 @@ def main() -> None:
   Main function where the gameloop is held
   """
   can_move = False #checks if a piece can move or not
+  global square_rect
   #game loop
   while True:
         #checks for player inputs
@@ -92,7 +103,9 @@ def main() -> None:
                        moveto = (i, j)
                        chess_board.update_board(movefrom, moveto)
                        can_move = False
+                       square_rect = None
                     else:
+                      square_rect = squares[i][j]
                       movefrom = (i, j)
                       can_move = True
         
