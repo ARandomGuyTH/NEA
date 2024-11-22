@@ -21,18 +21,27 @@ class Piece:
     
     return f"{colour} {self.__class__.__name__}" #returns the colour and piece as a f string
   
-  def generate_moves(self) -> set:
+  def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a piece can make. Different for each piece.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
     """
     pass
   
-  def generate_pawn_moves(self) -> set:
+  def generate_pawn_moves(self, board : list) -> list:
     """
     Generates every move a pawn can make.
     """
-    raise NotImplementedError
-  
+    moves = []
+
+    #checks for double pushing pawn
+    if self.has_moved == False:
+      move = (self.position, (self.position[0], self.position[1] + 2))
+      moves.append(move)
+    
+
   def generate_diagonal_moves(self) -> set:
     """
     Generates diagonal moves. For Queen's and Bishops.
@@ -71,3 +80,6 @@ class Queen(Piece):
 
 class King(Piece):
   pass
+
+if __name__ == "__main__":
+  print(1 * True)
