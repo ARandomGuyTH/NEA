@@ -18,6 +18,7 @@ clock = pygame.time.Clock()
 BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
 HIGHLIGHTED_SQUARE_COLOUR = (229, 212, 98)
+GREY_COLOUR = (100, 100, 100)
 
 #essential variables
 square_rect = None
@@ -39,6 +40,18 @@ IMAGE_MAP = {
   "K" : pygame.image.load("assets/whiteking.png").convert_alpha(),
   "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
 }
+
+
+def show_move_previews(square_rect, square_size) -> None:
+   """
+   If a piece is selected shows all move previews and highlights that square
+   """
+   pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
+   if chess_board.board[movefrom[0]][movefrom[1]]:
+      for move in chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board):
+        pos_x, pos_y = move[0] * square_size, move[1] * square_size
+        pygame.draw.circle(screen, GREY_COLOUR, (pos_x, pos_y), 10, 2) #(r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
+
 
 #This may be innefficient as I may be calling the load function every time?
 #furthermore I can create the squares once, not every frame.
@@ -66,7 +79,7 @@ def draw_board() -> list:
 
   #highlights any selected pieces
   if not square_rect is None:
-    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
+    show_move_previews(square_rect, square_size)
   
   for i in range(8):
     for j in range(8):
@@ -86,6 +99,7 @@ def main() -> None:
   """
   can_move = False #checks if a piece can move or not
   global square_rect
+  global movefrom
   #game loop
   while True:
         #checks for player inputs

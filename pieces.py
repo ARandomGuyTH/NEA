@@ -74,9 +74,8 @@ class Piece:
     
     move = (self.position, (curr_rank + movement, curr_file))
     moves.append(move)
-    
 
-    
+    return moves
 
   def generate_diagonal_moves(self) -> set:
     """
@@ -103,7 +102,16 @@ class Piece:
     raise NotImplementedError
   
 class Pawn(Piece):
-  pass
+    def generate_moves(self, board : list) -> list:
+      """
+      Will generate all moves a pawn can make.
+      Moves will be a list of all possible moves.
+      A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+      And, the position to move to in the second tuple.
+      """
+      moves = self.generate_pawn_moves(board)
+      return moves
+
 class Knight(Piece):
   pass
 
