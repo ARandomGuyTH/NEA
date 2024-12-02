@@ -71,13 +71,19 @@ class Piece:
 
     moves = []
 
-    #checks for double pushing pawn
-    if not self.has_moved:
-      moveto = (curr_x, curr_y + movement * 2)
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-    
+    #checks for single pushing pawns
+    moveto = (curr_x, curr_y + movement)
+    if board[moveto[1]][moveto[0]] is None:
+      move = (self.position, moveto)
+      moves.append(move)
+
+      #checks for double pushing pawn
+      if not self.has_moved:
+        moveto = (curr_x, curr_y + movement * 2)
+        if board[moveto[1]][moveto[0]] is None:
+          move = (self.position, moveto)
+          moves.append(move)
+      
     #checks if a piece is in the left diagonal (can take)
     if self.position[0] != 0:
       if board[curr_y + movement][curr_x - 1] is not None:
@@ -94,11 +100,6 @@ class Piece:
           move = (self.position, moveto)
           moves.append(move)
     
-    moveto = (curr_x, curr_y + movement)
-    if self.check_piece(moveto, board):
-      move = (self.position, moveto)
-      moves.append(move)
-
     return moves
 
   def generate_diagonal_moves(self) -> set:

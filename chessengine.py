@@ -104,6 +104,7 @@ class Board:
     
     if mofrx == motox and mofry == motoy:
       return False
+    
     #I need to impliment a check to see if the piece is being moved
     #correctly (according to the moves generated)
     #and to check for if the move creates checks.
