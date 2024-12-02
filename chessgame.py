@@ -46,11 +46,13 @@ def show_move_previews(square_rect, square_size) -> None:
    """
    If a piece is selected shows all move previews and highlights that square
    """
+   adj= square_size / 2
    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
    if chess_board.board[movefrom[0]][movefrom[1]]:
+      #calls generate moves everyframe. Can be created when clicked.
       for move in chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board):
-        pos_x, pos_y = move[0] * square_size, move[1] * square_size
-        pygame.draw.circle(screen, GREY_COLOUR, (pos_x, pos_y), 10, 2) #(r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
+        circle_x, circle_y = move[1][0] * square_size + adj, move[1][1] * square_size + adj
+        pygame.draw.circle(screen, GREY_COLOUR, (circle_x, circle_y), 15, 2) #(r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
 
 
 #This may be innefficient as I may be calling the load function every time?

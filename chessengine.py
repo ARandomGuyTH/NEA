@@ -102,6 +102,8 @@ class Board:
     if selected_piece.COLOUR != self.current_turn:
       return False
     
+    if mofrx == motox and mofry == motoy:
+      return False
     #I need to impliment a check to see if the piece is being moved
     #correctly (according to the moves generated)
     #and to check for if the move creates checks.
@@ -131,7 +133,8 @@ def main() -> None:
   INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
   board = Board(INIT_SEQUENCE)
   board.print_board()
-  print(board.board[5][0])
+  print(board.board[5][1])
+  print(board.board[1][2])
 
 if __name__ == "__main__":
   main()

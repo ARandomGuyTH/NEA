@@ -30,6 +30,22 @@ class Piece:
     #false indicates a pawn will not be promoted
     return False
 
+  def check_piece(self, position : tuple, board : list) -> bool:
+    """
+    Takes in a move (position) and a board and checks if a same coloured piece exists in that spot.
+    Returns False if there is, True if not.
+    If True the piece can move to that spot.
+    """
+    #checks if there is a piece in that position
+    if not board[position[0]][position[1]]:
+      return True
+    
+    #checks if a piece in that position is the opposite colour
+    if board[position[0]][position[1]].COLOUR != self.COLOUR:
+      return True
+    
+    return False
+
   
   def generate_moves(self, board : list) -> list:
     """
@@ -44,7 +60,7 @@ class Piece:
     """
     Generates every move a pawn can make.
     """
-    curr_rank, curr_file = self.position
+    curr_file, curr_rank = self.position
 
     #if the pawn is white it moves up the board (negative)
     if self.COLOUR:
@@ -57,23 +73,31 @@ class Piece:
 
     #checks for double pushing pawn
     if not self.has_moved:
-      move = (self.position, (curr_rank + movement * 2, curr_file))
-      moves.append(move)
+      moveto = (curr_file, curr_rank + movement * 2)
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
+        moves.append(move)
     
     #checks if a piece is in the left diagonal (can take)
-    if self.position[1] != 0:
-      if board[curr_rank + movement][curr_file - 1]:
-        move = (self.position, (curr_rank + movement, curr_file - 1))
-        moves.append(move)
+    if self.position[0] != 0:
+      if board[curr_file - 1][curr_rank + movement] is not None:
+        moveto = (curr_file - 1, curr_rank + movement)
+        if self.check_piece(moveto, board):
+          move = (self.position, moveto)
+          moves.append(move)
     
-        #checks if a piece is in the right diagonal (can take)
-    if self.position[1] != 7:
-      if board[curr_rank + movement][curr_file + 1]:
-        move = (self.position, (curr_rank + movement, curr_file + 1))
-        moves.append(move)
+    #checks if a piece is in the right diagonal (can take)
+    if self.position[0] != 7:
+      if board[curr_file + 1][curr_rank + movement] is not None:
+        moveto = (curr_file + 1, curr_rank + movement)
+        if self.check_piece(moveto, board):
+          move = (self.position, moveto)
+          moves.append(move)
     
-    move = (self.position, (curr_rank + movement, curr_file))
-    moves.append(move)
+    moveto = (curr_file, curr_rank + movement)
+    if self.check_piece(moveto, board):
+      move = (self.position, moveto)
+      moves.append(move)
 
     return moves
 
@@ -110,6 +134,9 @@ class Pawn(Piece):
       And, the position to move to in the second tuple.
       """
       moves = self.generate_pawn_moves(board)
+      for move in moves:
+        if board[move[1][0]][move[1][1]] is not None:
+          print(board[move[1][0]][move[1][1]].position)
       return moves
 
 class Knight(Piece):
