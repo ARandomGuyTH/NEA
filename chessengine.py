@@ -78,7 +78,7 @@ class Board:
     if self.validate_move(movefrom, moveto):
       #swaps the pieces positions and updates the piece object
       self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-      self.board[motox][motoy].position = (motox, motoy)
+      self.board[motox][motoy].update_position((motox, motoy))
       self.board[motox][motoy].has_moved = True
 
       self.update_turn()
@@ -131,6 +131,7 @@ def main() -> None:
   INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
   board = Board(INIT_SEQUENCE)
   board.print_board()
+  print(board.board[5][0])
 
 if __name__ == "__main__":
   main()

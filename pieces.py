@@ -21,6 +21,16 @@ class Piece:
     
     return f"{colour} {self.__class__.__name__}" #returns the colour and piece as a f string
   
+  def update_position(self, position : tuple) -> bool:
+    """
+    Takes in a tuple of length 2 and updatest the position of the piece to that position.
+    If a pawn reaches the final rank will allow for promotion.
+    """
+    self.position = position
+    #false indicates a pawn will not be promoted
+    return False
+
+  
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a piece can make. Different for each piece.
@@ -34,12 +44,38 @@ class Piece:
     """
     Generates every move a pawn can make.
     """
+    curr_rank, curr_file = self.position
+
+    #if the pawn is white it moves up the board (negative)
+    if self.COLOUR:
+      movement = -1
+    #if the pawn is black it moves down the board (positive)
+    else:
+      movement = 1
+
     moves = []
 
     #checks for double pushing pawn
-    if self.has_moved == False:
-      move = (self.position, (self.position[0], self.position[1] + 2))
+    if not self.has_moved:
+      move = (self.position, (curr_rank + movement * 2, curr_file))
       moves.append(move)
+    
+    #checks if a piece is in the left diagonal (can take)
+    if self.position[1] != 0:
+      if board[curr_rank + movement][curr_file - 1]:
+        move = (self.position, (curr_rank + movement, curr_file - 1))
+        moves.append(move)
+    
+        #checks if a piece is in the right diagonal (can take)
+    if self.position[1] != 7:
+      if board[curr_rank + movement][curr_file + 1]:
+        move = (self.position, (curr_rank + movement, curr_file + 1))
+        moves.append(move)
+    
+    move = (self.position, (curr_rank + movement, curr_file))
+    moves.append(move)
+    
+
     
 
   def generate_diagonal_moves(self) -> set:
