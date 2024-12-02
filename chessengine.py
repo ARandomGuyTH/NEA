@@ -105,8 +105,9 @@ class Board:
     if mofrx == motox and mofry == motoy:
       return False
     
-    #I need to impliment a check to see if the piece is being moved
-    #correctly (according to the moves generated)
+    if ((mofry, mofrx), (motoy, motox)) not in selected_piece.generate_moves(self.board):
+      return False
+
     #and to check for if the move creates checks.
 
     #True is returned if the move is valid

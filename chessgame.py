@@ -52,7 +52,7 @@ def show_move_previews(square_rect, square_size) -> None:
       #calls generate moves everyframe. Can be created when clicked.
       for move in chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board):
         circle_x, circle_y = move[1][0] * square_size + adj, move[1][1] * square_size + adj
-        pygame.draw.circle(screen, GREY_COLOUR, (circle_x, circle_y), 15, 2) #(r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
+        pygame.draw.circle(screen, GREY_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
 
 
 #This may be innefficient as I may be calling the load function every time?

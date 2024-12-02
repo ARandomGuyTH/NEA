@@ -135,9 +135,6 @@ class Pawn(Piece):
       And, the position to move to in the second tuple.
       """
       moves = self.generate_pawn_moves(board)
-      for move in moves:
-        if board[move[1][0]][move[1][1]] is not None:
-          print(board[move[1][0]][move[1][1]].position)
       return moves
 
 class Knight(Piece):
