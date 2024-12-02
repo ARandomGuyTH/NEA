@@ -46,12 +46,15 @@ def show_move_previews(square_rect, square_size) -> None:
    """
    If a piece is selected shows all move previews and highlights that square
    """
-   adj= square_size / 2
+   adjust = square_size / 2
+   #highlights square
    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
    if chess_board.board[movefrom[0]][movefrom[1]]:
       #calls generate moves everyframe. Can be created when clicked.
       for move in chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board):
-        circle_x, circle_y = move[1][0] * square_size + adj, move[1][1] * square_size + adj
+        #calculate correct circle position
+        circle_x, circle_y = move[1][0] * square_size + adjust, move[1][1] * square_size + adjust
+        #draws circle on the screen
         pygame.draw.circle(screen, GREY_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
 
 

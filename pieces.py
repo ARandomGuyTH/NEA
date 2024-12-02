@@ -45,16 +45,6 @@ class Piece:
       return True
     
     return False
-
-  
-  def generate_moves(self, board : list) -> list:
-    """
-    Will generate all moves a piece can make. Different for each piece.
-    Moves will be a list of all possible moves.
-    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
-    And, the position to move to in the second tuple.
-    """
-    pass
   
   def generate_pawn_moves(self, board : list) -> list:
     """

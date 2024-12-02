@@ -113,7 +113,7 @@ class Board:
     #True is returned if the move is valid
     return True
   
-  def update_turn (self) -> None:
+  def update_turn(self) -> None:
     """
     when called, alternates who's turn it is. Returns the updated value
     """
