@@ -86,18 +86,28 @@ class Board:
     #returning bool if it has happened may be useful?
     return False
   
-  def validate_move(self, movefrom, moveto) -> bool:
+  def validate_move(self, movefrom : tuple, moveto : tuple) -> bool:
+    """
+    Takes in a move, and checks if the move is valid or not.
+    """
     mofrx, mofry = movefrom
     motox, motoy = moveto
     selected_piece = self.board[mofrx][mofry]
 
-    if self.board[mofrx][mofry] is None:
+    #checks if a piece is being selected
+    if selected_piece is None:
       return False
     
+    #checks if a piece is being moved on the correct turn
     if selected_piece.COLOUR != self.current_turn:
       return False
     
-    return True
+    #I need to impliment a check to see if the piece is being moved
+    #correctly (according to the moves generated)
+    #and to check for if the move creates checks.
+
+    #True is returned if the move is valid
+    return Truesc
   
   def update_turn (self) -> None:
     """
