@@ -107,7 +107,7 @@ class Board:
     #and to check for if the move creates checks.
 
     #True is returned if the move is valid
-    return Truesc
+    return True
   
   def update_turn (self) -> None:
     """
