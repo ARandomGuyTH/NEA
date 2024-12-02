@@ -9,8 +9,6 @@ DEFAULT_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 WHITE = True
 BLACK = False
 
-#by default white goes first (chess rule)
-turn = WHITE
 
 #Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
 SEQUENCE_MAP = {
@@ -30,6 +28,9 @@ class Board:
 
     #creates board
     self.board = self.create_board(FEN)
+    
+    #by default white moves first
+    self.current_turn = WHITE
 
   def create_board(self, FEN : str) -> list:
     """
@@ -80,9 +81,25 @@ class Board:
       self.board[motox][motoy].position = (motox, motoy)
       self.board[motox][motoy].has_moved = True
 
+      self.update_turn()
       return True
     #returning bool if it has happened may be useful?
     return False
+  
+  def update_turn (self) -> None:
+    """
+    when called, alternates who's turn it is. Returns the updated value
+    """
+    if self.current_turn:
+      #if the current turn is white change it to black
+      self.current_turn = BLACK
+ 
+    else:
+      #if the current turn is black change it to white
+      self.current_turn = WHITE
+    
+    #returning the updated value may be useful later
+    return self.current_turn
 
 def main() -> None:
   """
