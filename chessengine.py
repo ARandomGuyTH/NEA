@@ -28,7 +28,7 @@ class Board:
 
     #creates board
     self.board = self.create_board(FEN)
-    
+
     #by default white moves first
     self.current_turn = WHITE
 
@@ -75,7 +75,7 @@ class Board:
     mofrx, mofry = movefrom
     motox, motoy = moveto
     #checks if a piece is in that spot
-    if not self.board[mofrx][mofry] is None:
+    if self.validate_move(movefrom, moveto):
       #swaps the pieces positions and updates the piece object
       self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
       self.board[motox][motoy].position = (motox, motoy)
@@ -85,6 +85,13 @@ class Board:
       return True
     #returning bool if it has happened may be useful?
     return False
+  
+  def validate_move(self, movefrom, moveto) -> bool:
+    mofrx, mofry = movefrom
+    motox, motoy = moveto
+
+    if self.board[mofrx][mofry] is None:
+      return False
   
   def update_turn (self) -> None:
     """
