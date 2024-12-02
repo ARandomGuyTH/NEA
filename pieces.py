@@ -37,11 +37,11 @@ class Piece:
     If True the piece can move to that spot.
     """
     #checks if there is a piece in that position
-    if not board[position[0]][position[1]]:
+    if not board[position[1]][position[0]]:
       return True
     
     #checks if a piece in that position is the opposite colour
-    if board[position[0]][position[1]].COLOUR != self.COLOUR:
+    if board[position[1]][position[0]].COLOUR != self.COLOUR:
       return True
     
     return False
@@ -60,7 +60,7 @@ class Piece:
     """
     Generates every move a pawn can make.
     """
-    curr_file, curr_rank = self.position
+    curr_x, curr_y = self.position
 
     #if the pawn is white it moves up the board (negative)
     if self.COLOUR:
@@ -73,28 +73,28 @@ class Piece:
 
     #checks for double pushing pawn
     if not self.has_moved:
-      moveto = (curr_file, curr_rank + movement * 2)
+      moveto = (curr_x, curr_y + movement * 2)
       if self.check_piece(moveto, board):
         move = (self.position, moveto)
         moves.append(move)
     
     #checks if a piece is in the left diagonal (can take)
     if self.position[0] != 0:
-      if board[curr_file - 1][curr_rank + movement] is not None:
-        moveto = (curr_file - 1, curr_rank + movement)
+      if board[curr_y + movement][curr_x - 1] is not None:
+        moveto = (curr_x - 1, curr_y + movement)
         if self.check_piece(moveto, board):
           move = (self.position, moveto)
           moves.append(move)
     
     #checks if a piece is in the right diagonal (can take)
     if self.position[0] != 7:
-      if board[curr_file + 1][curr_rank + movement] is not None:
-        moveto = (curr_file + 1, curr_rank + movement)
+      if board[curr_y + movement][curr_x + 1] is not None:
+        moveto = (curr_x + 1, curr_y + movement)
         if self.check_piece(moveto, board):
           move = (self.position, moveto)
           moves.append(move)
     
-    moveto = (curr_file, curr_rank + movement)
+    moveto = (curr_x, curr_y + movement)
     if self.check_piece(moveto, board):
       move = (self.position, moveto)
       moves.append(move)

@@ -37,7 +37,7 @@ class Board:
     Takes in FEN as input. Returns the appropriate Board as a 2D list.
     """
     board = []
-    #position is (x,y) or (rank, file)
+    #position is (x,y) or (file, rank)
     #iterates through the ranks
     for y, rank in enumerate(FEN.split("/")):
       temp_rank_list = [None for x in range(8)]
@@ -78,7 +78,7 @@ class Board:
     if self.validate_move(movefrom, moveto):
       #swaps the pieces positions and updates the piece object
       self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-      self.board[motox][motoy].update_position((motox, motoy))
+      self.board[motox][motoy].update_position((motoy, motox))
       self.board[motox][motoy].has_moved = True
 
       self.update_turn()
