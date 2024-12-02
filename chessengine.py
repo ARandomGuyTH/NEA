@@ -89,8 +89,12 @@ class Board:
   def validate_move(self, movefrom, moveto) -> bool:
     mofrx, mofry = movefrom
     motox, motoy = moveto
+    selected_piece = self.board[mofrx][mofry]
 
     if self.board[mofrx][mofry] is None:
+      return False
+    
+    if selected_piece.COLOUR != self.current_turn:
       return False
   
   def update_turn (self) -> None:
