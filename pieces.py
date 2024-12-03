@@ -92,11 +92,59 @@ class Piece:
     
     return moves
 
-  def generate_diagonal_moves(self) -> set:
+  def generate_diagonal_moves(self, board : list) -> list:
     """
     Generates diagonal moves. For Queen's and Bishops.
     """
-    raise NotImplementedError
+    search_x, search_y = self.position
+
+    moves = []
+
+    search_x, search_y = self.position
+    #checks down right diagonal
+    while search_x < 7 and search_y < 7 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
+      search_x += 1
+      search_y += 1
+      moveto = (search_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
+        moves.append(move)
+    
+    search_x, search_y = self.position
+    #checks up right diagonal
+    while search_x < 7 and search_y > 0 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
+      search_x += 1
+      search_y -= 1
+      moveto = (search_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
+        moves.append(move)
+    
+    search_x, search_y = self.position
+    #checks up left diagonal
+    while search_x > 0 and search_y > 0 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
+      search_x -= 1
+      search_y -= 1
+      moveto = (search_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
+        moves.append(move)
+    
+    search_x, search_y = self.position
+    #checks down right diagonal
+    while search_x > 0 and search_y < 7 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
+      search_x -= 1
+      search_y += 1
+      moveto = (search_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
+        moves.append(move)
+    
+    return moves
   
   def generate_straight_moves(self, board : list) -> list:
     """
@@ -111,20 +159,20 @@ class Piece:
     #iterates until the end of the board or a piece is there
     while search_x > 0 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
       search_x -= 1
-      move = (search_x, curr_y)
+      moveto = (search_x, curr_y)
       #checks if the piece can be taken
-      if self.check_piece(move, board):
-        move = (self.position, move)
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
         moves.append(move)
 
     #searches right
     search_x = curr_x
     while search_x < 7 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
       search_x += 1
-      move = (search_x, curr_y)
+      moveto = (search_x, curr_y)
       #checks if the piece can be taken
-      if self.check_piece(move, board):
-        move = (self.position, move)
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
         moves.append(move)
 
     #searches left
@@ -132,10 +180,10 @@ class Piece:
     #iterates until the end of the board or a piece is there
     while search_y > 0 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
       search_y -= 1
-      move = (curr_x, search_y)
+      moveto = (curr_x, search_y)
       #checks if the piece can be taken
-      if self.check_piece(move, board):
-        move = (self.position, move)
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
         moves.append(move)
 
     #searches left
@@ -143,22 +191,37 @@ class Piece:
     #iterates until the end of the board or a piece is there
     while search_y < 7 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
       search_y += 1
-      move = (curr_x, search_y)
+      moveto = (curr_x, search_y)
       #checks if the piece can be taken
-      if self.check_piece(move, board):
-        move = (self.position, move)
+      if self.check_piece(moveto, board):
+        move = (self.position, moveto)
         moves.append(move)
 
 
     return moves
   
-  def generate_adjacent_moves(self) -> set:
+  def generate_adjacent_moves(self, board : list) -> list:
     """
     Genereates adjacent moves (squares next to a piece). For Kings.
     """
-    raise NotImplementedError
+    curr_x, curr_y = self.position
+
+    moves = []
+
+    #loop through all adjacent squares
+    for x in range(3):
+      for y in range(3):
+        #check if the squares are on the board
+        if curr_x - 1 + x in range(0,8) and curr_y - 1 + y in range(0, 8):
+          moveto = (curr_x - 1 + x, curr_y - 1 + y)
+          #check if the move can be made
+          if self.check_piece(moveto, board):
+            move = (self.position, moveto)
+            moves.append(move)
+    
+    return moves
   
-  def generate_knight_moves(self) -> set:
+  def generate_knight_moves(self, board : list) -> list:
     """
     Generate knight moves (L shape, can jump pieces).
     """
@@ -190,7 +253,15 @@ class Rook(Piece):
       return moves
 
 class Bishop(Piece):
-  pass
+  def generate_moves(self, board : list) -> list:
+    """
+    Will generate all moves a Bishop can make.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
+    """
+    moves = self.generate_diagonal_moves(board)
+    return moves
 
 class Queen(Piece):
   def generate_moves(self, board : list) -> list:
@@ -201,11 +272,20 @@ class Queen(Piece):
     And, the position to move to in the second tuple.
     """
     moves = self.generate_straight_moves(board)
+    moves.extend(self.generate_diagonal_moves(board))
     return moves
 
 
 class King(Piece):
-  pass
+  def generate_moves(self, board : list) -> list:
+    """
+    Will generate all moves a King can make.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
+    """
+    moves = self.generate_adjacent_moves(board)
+    return moves
 
 if __name__ == "__main__":
   print(1 * True)
