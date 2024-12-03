@@ -108,12 +108,48 @@ class Piece:
 
     #searches left
     search_x = curr_x
-    while search_x >= 0 and board[curr_y][search_x] is None:
+    #iterates until the end of the board or a piece is there
+    while search_x > 0 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
       search_x -= 1
-      if self.check_piece((search_x, curr_y), board):
-        move = (self.position, (search_x, curr_y))
+      move = (search_x, curr_y)
+      #checks if the piece can be taken
+      if self.check_piece(move, board):
+        move = (self.position, move)
         moves.append(move)
-    
+
+    #searches right
+    search_x = curr_x
+    while search_x < 7 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
+      search_x += 1
+      move = (search_x, curr_y)
+      #checks if the piece can be taken
+      if self.check_piece(move, board):
+        move = (self.position, move)
+        moves.append(move)
+
+    #searches left
+    search_y = curr_y
+    #iterates until the end of the board or a piece is there
+    while search_y > 0 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
+      search_y -= 1
+      move = (curr_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(move, board):
+        move = (self.position, move)
+        moves.append(move)
+
+    #searches left
+    search_y = curr_y
+    #iterates until the end of the board or a piece is there
+    while search_y < 7 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
+      search_y += 1
+      move = (curr_x, search_y)
+      #checks if the piece can be taken
+      if self.check_piece(move, board):
+        move = (self.position, move)
+        moves.append(move)
+
+
     return moves
   
   def generate_adjacent_moves(self) -> set:
@@ -153,11 +189,20 @@ class Rook(Piece):
       moves = self.generate_straight_moves(board)
       return moves
 
-
 class Bishop(Piece):
   pass
+
 class Queen(Piece):
-  pass
+  def generate_moves(self, board : list) -> list:
+    """
+    Will generate all moves a Queen can make.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
+    """
+    moves = self.generate_straight_moves(board)
+    return moves
+
 
 class King(Piece):
   pass
