@@ -225,7 +225,23 @@ class Piece:
     """
     Generate knight moves (L shape, can jump pieces).
     """
-    raise NotImplementedError
+    curr_x, curr_y = self.position
+
+    moves = []
+
+    offset = [-2, -1, 1, 2]
+    for x_offset in offset:
+      for y_offset in offset:
+        moveto = (curr_x + x_offset, curr_y + y_offset)
+        #absolute of x_offset can't equal y_offset
+        if x_offset != y_offset and -x_offset != y_offset:
+          if moveto[0] in range(0,8) and moveto[1] in range(0, 8):
+            if self.check_piece(moveto, board):
+              move = (self.position, moveto)
+              moves.append(move)
+    
+    return moves
+
   
 class Pawn(Piece):
     def generate_moves(self, board : list) -> list:
@@ -239,7 +255,15 @@ class Pawn(Piece):
       return moves
 
 class Knight(Piece):
-  pass
+  def generate_moves(self, board : list) -> list:
+    """
+    Will generate all moves a Rook can make.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
+    """
+    moves = self.generate_knight_moves(board)
+    return moves
 
 class Rook(Piece):
   def generate_moves(self, board : list) -> list:
