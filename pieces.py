@@ -98,11 +98,23 @@ class Piece:
     """
     raise NotImplementedError
   
-  def generate_straight_moves(self) -> set:
+  def generate_straight_moves(self, board : list) -> list:
     """
     Generates straight moves. For Queen's and Rooks.
     """
-    raise NotImplementedError
+    curr_x, curr_y = self.position
+
+    moves = []
+
+    #searches left
+    search_x = curr_x
+    while search_x >= 0 and board[curr_y][search_x] is None:
+      search_x -= 1
+      if self.check_piece((search_x, curr_y), board):
+        move = (self.position, (search_x, curr_y))
+        moves.append(move)
+    
+    return moves
   
   def generate_adjacent_moves(self) -> set:
     """
@@ -131,7 +143,17 @@ class Knight(Piece):
   pass
 
 class Rook(Piece):
-  pass
+  def generate_moves(self, board : list) -> list:
+      """
+      Will generate all moves a Rook can make.
+      Moves will be a list of all possible moves.
+      A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+      And, the position to move to in the second tuple.
+      """
+      moves = self.generate_straight_moves(board)
+      return moves
+
+
 class Bishop(Piece):
   pass
 class Queen(Piece):
