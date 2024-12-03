@@ -52,12 +52,11 @@ def show_move_previews(square_rect, square_size) -> None:
    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
    if chess_board.board[movefrom[0]][movefrom[1]]:
       #calls generate moves everyframe. Can be created when clicked.
-      for move in chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board):
+      for move in move_previews:
         #calculate correct circle position
         circle_x, circle_y = move[1][0] * square_size + adjust, move[1][1] * square_size + adjust
         #draws circle on the screen
         pygame.draw.circle(screen, ORANGE_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
-
 
 #This may be innefficient as I may be calling the load function every time?
 #furthermore I can create the squares once, not every frame.
@@ -106,6 +105,7 @@ def main() -> None:
   can_move = False #checks if a piece can move or not
   global square_rect
   global movefrom
+  global move_previews
   #game loop
   while True:
         #checks for player inputs
@@ -124,10 +124,14 @@ def main() -> None:
                        chess_board.update_board(movefrom, moveto)
                        can_move = False
                        square_rect = None
+                       move_previews = []
                     else:
                       square_rect = squares[i][j]
                       movefrom = (i, j)
                       can_move = True
+
+                      if chess_board.board[movefrom[0]][movefrom[1]]:
+                        move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
         
         #draw the board.
         screen.fill("white")
