@@ -18,7 +18,7 @@ clock = pygame.time.Clock()
 BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
 HIGHLIGHTED_SQUARE_COLOUR = (229, 212, 98)
-GREY_COLOUR = (100, 100, 100)
+ORANGE_COLOUR = (215, 151, 0)
 
 #essential variables
 square_rect = None
@@ -55,7 +55,7 @@ def show_move_previews(square_rect, square_size) -> None:
         #calculate correct circle position
         circle_x, circle_y = move[1][0] * square_size + adjust, move[1][1] * square_size + adjust
         #draws circle on the screen
-        pygame.draw.circle(screen, GREY_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
+        pygame.draw.circle(screen, ORANGE_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
 
 
 #This may be innefficient as I may be calling the load function every time?
