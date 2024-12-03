@@ -19,6 +19,7 @@ BLACK_SQUARE_COLOUR = (150, 77, 55)
 WHITE_SQUARE_COLOUR = (255, 233, 197)
 HIGHLIGHTED_SQUARE_COLOUR = (229, 212, 98)
 ORANGE_COLOUR = (215, 151, 0)
+pygame.display.set_caption("Blobfish")
 
 #essential variables
 square_rect = None
@@ -40,7 +41,7 @@ IMAGE_MAP = {
   "K" : pygame.image.load("assets/whiteking.png").convert_alpha(),
   "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
 }
-
+pygame.display.set_icon(IMAGE_MAP["P"])
 
 def show_move_previews(square_rect, square_size) -> None:
    """
