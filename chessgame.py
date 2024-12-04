@@ -140,7 +140,7 @@ def main() -> None:
 
         pygame.display.update()
         #DeltaTime is the time between frames, will be used for timing
-        DeltaTime = clock.tick()
+        DeltaTime = clock.tick(24)
 
 if __name__ == "__main__":
     main()
