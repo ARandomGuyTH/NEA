@@ -1,8 +1,11 @@
 #default class that all pieces inherit from
 
+#direction for all sliding pieces
 diagonal_slide_direction = ((1, 1), (1, -1), (-1, 1), (-1, -1))
 straight_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1))
 queen_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
+
+#default class that all pieces inherit from
 class Piece:
   """
   Piece class all pieces inherit from.
