@@ -1,4 +1,8 @@
 #default class that all pieces inherit from
+
+diagonal_slide_direction = ((1, 1), (1, -1), (-1, 1), (-1, -1))
+straight_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1))
+queen_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
 class Piece:
   """
   Piece class all pieces inherit from.
@@ -92,85 +96,39 @@ class Piece:
     
     return moves
 
-  def generate_diagonal_moves(self, board : list) -> list:
+  def generate_sliding_moves(self, board : list, direction : tuple) -> list:
     """
-    Generates diagonal moves. For Queen's and Bishops.
+    Generates sliding piece moves. direction should be the directions the pieces can move.
+    For example, (1, -1) is top right, (1, 0) is right, etc.
     """
-    search_x, search_y = self.position
-
-    moves = []
-
-    search_x, search_y = self.position
-    #checks down right diagonal
-    while search_x < 7 and search_y < 7 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
-      search_x += 1
-      search_y += 1
-      moveto = (search_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-    
-    search_x, search_y = self.position
-    #checks up right diagonal
-    while search_x < 7 and search_y > 0 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
-      search_x += 1
-      search_y -= 1
-      moveto = (search_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-    
-    search_x, search_y = self.position
-    #checks up left diagonal
-    while search_x > 0 and search_y > 0 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
-      search_x -= 1
-      search_y -= 1
-      moveto = (search_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-    
-    search_x, search_y = self.position
-    #checks down right diagonal
-    while search_x > 0 and search_y < 7 and (board[search_y][search_x] is None or board[search_y][search_x] is self):
-      search_x -= 1
-      search_y += 1
-      moveto = (search_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-    
-    return moves
-  
-  def generate_straight_moves(self, board : list) -> list:
-    """
-    Generates straight moves. For Queen's and Rooks.
-    """
-
     moves = []
 
     #adjustment used for determining side checked (right left down up)
-    adjust = ((1, 0), (-1, 0), (0, 1), (0, -1))
-    for adjust_x, adjust_y in adjust:
-      #searches left
+    for adjust_x, adjust_y in direction:
       search_x, search_y = self.position
-      #iterates until the end of the board or a piece is there
-      while search_x in range(0, 7) and search_y in range(7):
-        if  (board[search_y][search_x] is None or board[search_y][search_x] is self):
+      search_x += adjust_x
+      search_y +=  adjust_y
+      #iterates until the end of the board
+      while search_x in range(0, 8) and search_y in range(0, 8):
+        #checks if a piece has been reached
+        if board[search_y][search_x] is None:
+          #if there is no piece the move can be made
+          moveto = (search_x, search_y)
+          move = (self.position, moveto)
+          moves.append(move)
+          
           search_x += adjust_x
           search_y +=  adjust_y
-          moveto = (search_x, search_y)
-          #checks if the piece can be taken
-          if self.check_piece(moveto, board):
-            move = (self.position, moveto)
-            moves.append(move)
         
         else:
-          adjust_x = 8
+          #if there is a piece we need to check if the piece can be taken
+          moveto = (search_x, search_y)
+          if self.check_piece(moveto, board):
+            #if the piece can be taken the move can be made
+            move = (self.position, moveto)
+            moves.append(move)
+          #the loop needs to be break to avoid piece jumping
+          break
 
     return moves
   
@@ -214,9 +172,7 @@ class Piece:
               move = (self.position, moveto)
               moves.append(move)
     
-    return moves
-
-  
+    return moves  
 class Pawn(Piece):
     def generate_moves(self, board : list) -> list:
       """
@@ -247,7 +203,7 @@ class Rook(Piece):
       A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
       And, the position to move to in the second tuple.
       """
-      moves = self.generate_straight_moves(board)
+      moves = self.generate_sliding_moves(board, straight_slide_direction)
       return moves
 
 class Bishop(Piece):
@@ -258,7 +214,7 @@ class Bishop(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.generate_diagonal_moves(board)
+    moves = self.generate_sliding_moves(board, diagonal_slide_direction)
     return moves
 
 class Queen(Piece):
@@ -269,8 +225,7 @@ class Queen(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.generate_straight_moves(board)
-    moves.extend(self.generate_diagonal_moves(board))
+    moves = self.generate_sliding_moves(board, queen_slide_direction)
     return moves
 
 
