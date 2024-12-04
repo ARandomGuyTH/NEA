@@ -150,53 +150,27 @@ class Piece:
     """
     Generates straight moves. For Queen's and Rooks.
     """
-    curr_x, curr_y = self.position
 
     moves = []
 
-    #searches left
-    search_x = curr_x
-    #iterates until the end of the board or a piece is there
-    while search_x > 0 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
-      search_x -= 1
-      moveto = (search_x, curr_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-
-    #searches right
-    search_x = curr_x
-    while search_x < 7 and (board[curr_y][search_x] is None or board[curr_y][search_x] is self):
-      search_x += 1
-      moveto = (search_x, curr_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-
-    #searches left
-    search_y = curr_y
-    #iterates until the end of the board or a piece is there
-    while search_y > 0 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
-      search_y -= 1
-      moveto = (curr_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-
-    #searches left
-    search_y = curr_y
-    #iterates until the end of the board or a piece is there
-    while search_y < 7 and (board[search_y][curr_x] is None or board[search_y][curr_x] is self):
-      search_y += 1
-      moveto = (curr_x, search_y)
-      #checks if the piece can be taken
-      if self.check_piece(moveto, board):
-        move = (self.position, moveto)
-        moves.append(move)
-
+    #adjustment used for determining side checked (right left down up)
+    adjust = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    for adjust_x, adjust_y in adjust:
+      #searches left
+      search_x, search_y = self.position
+      #iterates until the end of the board or a piece is there
+      while search_x in range(0, 7) and search_y in range(7):
+        if  (board[search_y][search_x] is None or board[search_y][search_x] is self):
+          search_x += adjust_x
+          search_y +=  adjust_y
+          moveto = (search_x, search_y)
+          #checks if the piece can be taken
+          if self.check_piece(moveto, board):
+            move = (self.position, moveto)
+            moves.append(move)
+        
+        else:
+          adjust_x = 8
 
     return moves
   
@@ -232,9 +206,9 @@ class Piece:
     offset = [-2, -1, 1, 2]
     for x_offset in offset:
       for y_offset in offset:
-        moveto = (curr_x + x_offset, curr_y + y_offset)
         #absolute of x_offset can't equal y_offset
         if x_offset != y_offset and -x_offset != y_offset:
+          moveto = (curr_x + x_offset, curr_y + y_offset)
           if moveto[0] in range(0,8) and moveto[1] in range(0, 8):
             if self.check_piece(moveto, board):
               move = (self.position, moveto)
