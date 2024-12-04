@@ -46,7 +46,7 @@ class Piece:
     
     return False
   
-  def __generate_pawn_moves(self, board : list) -> list:
+  def generate_pawn_moves(self, board : list) -> list:
     """
     Generates every move a pawn can make.
     """
@@ -92,7 +92,7 @@ class Piece:
     
     return moves
 
-  def __generate_diagonal_moves(self, board : list) -> list:
+  def generate_diagonal_moves(self, board : list) -> list:
     """
     Generates diagonal moves. For Queen's and Bishops.
     """
@@ -146,7 +146,7 @@ class Piece:
     
     return moves
   
-  def __generate_straight_moves(self, board : list) -> list:
+  def generate_straight_moves(self, board : list) -> list:
     """
     Generates straight moves. For Queen's and Rooks.
     """
@@ -200,7 +200,7 @@ class Piece:
 
     return moves
   
-  def __generate_adjacent_moves(self, board : list) -> list:
+  def generate_adjacent_moves(self, board : list) -> list:
     """
     Genereates adjacent moves (squares next to a piece). For Kings.
     """
@@ -221,7 +221,7 @@ class Piece:
     
     return moves
   
-  def __generate_knight_moves(self, board : list) -> list:
+  def generate_knight_moves(self, board : list) -> list:
     """
     Generate knight moves (L shape, can jump pieces).
     """
@@ -251,7 +251,7 @@ class Pawn(Piece):
       A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
       And, the position to move to in the second tuple.
       """
-      moves = self.__generate_pawn_moves(board)
+      moves = self.generate_pawn_moves(board)
       return moves
 
 class Knight(Piece):
@@ -262,7 +262,7 @@ class Knight(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.__generate_knight_moves(board)
+    moves = self.generate_knight_moves(board)
     return moves
 
 class Rook(Piece):
@@ -273,7 +273,7 @@ class Rook(Piece):
       A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
       And, the position to move to in the second tuple.
       """
-      moves = self.__generate_straight_moves(board)
+      moves = self.generate_straight_moves(board)
       return moves
 
 class Bishop(Piece):
@@ -284,7 +284,7 @@ class Bishop(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.__generate_diagonal_moves(board)
+    moves = self.generate_diagonal_moves(board)
     return moves
 
 class Queen(Piece):
@@ -295,9 +295,10 @@ class Queen(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.__generate_straight_moves(board)
-    moves.extend(self.__generate_diagonal_moves(board))
+    moves = self.generate_straight_moves(board)
+    moves.extend(self.generate_diagonal_moves(board))
     return moves
+
 
 class King(Piece):
   def generate_moves(self, board : list) -> list:
@@ -307,7 +308,7 @@ class King(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.__generate_adjacent_moves(board)
+    moves = self.generate_adjacent_moves(board)
     return moves
 
 if __name__ == "__main__":
