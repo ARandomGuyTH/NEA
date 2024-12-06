@@ -142,20 +142,22 @@ class Board:
       #if the current turn is black change it to white
       self.current_turn = WHITE
     
+    moves = self.generate_legal_moves()
+
+    if not moves:
+      print("GAME OVER!")
+    
     #returning the updated value may be useful later
     return self.current_turn
   
-  def generate_pseudolegal_moves(self):
+  def generate_legal_moves(self):
     moves = []
     for rank in self.board:
       for piece in rank:
         if piece:
           if piece.COLOUR == self.current_turn:
-            moves.extend(piece.generate_moves(self.board))
-          
-          if piece is pieces.King:
-            self.king_pos = piece.position
-
+            for move in piece.generate_moves(self.board):
+              moves.append(move)
 
     return moves
 
@@ -166,11 +168,9 @@ class Board:
     current_board = deepcopy(self.board)
     mofrx, mofry = movefrom
     motox, motoy = moveto
-    selected_piece = self.board[mofrx][mofry]
 
     valid = True
     
-    #make the move
     self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
     self.board[motox][motoy].update_position((motoy, motox))
     current_has_moved = deepcopy(self.board[motox][motoy])
