@@ -142,10 +142,10 @@ class Board:
       #if the current turn is black change it to white
       self.current_turn = WHITE
     
-    moves = self.generate_legal_moves()
+    #moves = self.generate_legal_moves()
 
-    if not moves:
-      print("GAME OVER!")
+    #if not moves:
+    #  print("GAME OVER!")
     
     #returning the updated value may be useful later
     return self.current_turn
