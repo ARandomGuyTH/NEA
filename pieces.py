@@ -1,6 +1,6 @@
 #default class that all pieces inherit from
 
-#direction for all sliding pieces
+#direction for all sliding pieces. Directions are (x, y), values should be 1 (forward), -1 (backwards), or 0 (doesnt move)
 diagonal_slide_direction = ((1, 1), (1, -1), (-1, 1), (-1, -1))
 straight_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1))
 queen_slide_direction = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
