@@ -4,6 +4,7 @@ import pygame
 
 #creates a board object
 chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
+#chess_board = chessengine.Board("k7/8/8/8/8/1R6/2R6/K7")
 
 #creates game screen
 pygame.init()

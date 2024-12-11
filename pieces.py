@@ -243,5 +243,51 @@ class King(Piece):
     moves = self.generate_adjacent_moves(board)
     return moves
 
+  def check_moves(self, board : list, moves : list, piece : Piece) -> bool:
+    """
+    given a list of moves and a type of piece
+    Will determine if that piece, of an opposite colour to the king appears.
+    """
+    for move in moves:
+      moveto = move[1]
+      if isinstance(board[moveto[1]][moveto[0]], piece):
+        return True
+
+
+  def check_detection(self, board : list) -> bool:
+    """
+    checks if the king is in check. Returns True if the king is.
+    """
+    #only need to check the last move for kings bishops and queens!!!!
+    #!!!!OPTIMISE LATER!!!
+    moves = self.generate_sliding_moves(board, diagonal_slide_direction)
+    if self.check_moves(board, moves, Bishop):
+      return True
+    if self.check_moves(board, moves, Queen):
+      return True
+
+    moves = self.generate_sliding_moves(board, straight_slide_direction)
+    if self.check_moves(board, moves, Rook):
+      return True
+    if self.check_moves(board, moves, Queen):
+      return True
+    
+    moves = self.generate_knight_moves(board)
+    if self.check_moves(board, moves, Knight):
+      return True
+    
+    moves = self.generate_pawn_moves(board)
+    if self.check_moves(board, moves, Pawn):
+      return True
+
+    moves = self.generate_adjacent_moves(board)
+    if self.check_moves(board, moves, King):
+      return True
+    
+    return False
+    
+
+    
+    
 if __name__ == "__main__":
   print(1 * True)

@@ -1,5 +1,5 @@
 import pieces
-
+from copy import deepcopy
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
@@ -8,7 +8,6 @@ DEFAULT_FEN =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 #Colour represented as a boolean
 WHITE = True
 BLACK = False
-
 
 #Sequence map used for creating the boards using FEN. Maps every character to a class using a dictionary
 SEQUENCE_MAP = {
@@ -32,6 +31,8 @@ class Board:
     #by default white moves first
     self.current_turn = WHITE
 
+    self.find_kings()
+
   def create_board(self, FEN : str) -> list:
     """
     Takes in FEN as input. Returns the appropriate Board as a 2D list.
@@ -51,8 +52,22 @@ class Board:
           #creates and object if upper case piece is white
           temp_rank_list[x] = SEQUENCE_MAP[piece.lower()](piece.isupper(), (x, y), piece)
           x += 1
+
       board.append(temp_rank_list)   
     return board
+  
+  def find_kings(self) -> None:
+    """
+    will find the kings on the board and return their coordinates.
+    Firstly, the white king's position, then the black's
+    """
+    for rank in self.board:
+      for piece in rank:
+        if isinstance(piece, pieces.King):
+          if piece.COLOUR:
+            self.white_king = piece
+          else:
+            self.black_king = piece
 
   #takes in the board as input and displays it in text form (used for testing)
   def print_board(self) -> None:
@@ -74,15 +89,17 @@ class Board:
     #unpacks tuple for x and y coords
     mofrx, mofry = movefrom
     motox, motoy = moveto
+    selected_piece = self.board[mofrx][mofry]
     #checks if a piece is in that spot
     if self.validate_move(movefrom, moveto):
-      #swaps the pieces positions and updates the piece object
-      self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-      self.board[motox][motoy].update_position((motoy, motox))
-      self.board[motox][motoy].has_moved = True
+      if not self.incheck(movefrom, moveto):
+        #swaps the pieces positions and updates the piece object
+        self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
+        self.board[motox][motoy].update_position((motoy, motox))
+        self.board[motox][motoy].has_moved = True
 
-      self.update_turn()
-      return True
+        self.update_turn()
+        return True
     #returning bool if it has happened may be useful?
     return False
   
@@ -125,8 +142,62 @@ class Board:
       #if the current turn is black change it to white
       self.current_turn = WHITE
     
+    #moves = self.generate_legal_moves()
+
+    #if not moves:
+    #  print("GAME OVER!")
+    
     #returning the updated value may be useful later
     return self.current_turn
+  
+  def generate_legal_moves(self):
+    moves = []
+    for rank in self.board:
+      for piece in rank:
+        if piece:
+          if piece.COLOUR == self.current_turn:
+            for move in piece.generate_moves(self.board):
+              moves.append(move)
+
+    return moves
+
+  def incheck(self, movefrom : tuple, moveto : tuple) -> bool:
+    """
+    given a move will check if that move results in check.
+    """
+    current_board = deepcopy(self.board)
+    mofrx, mofry = movefrom
+    motox, motoy = moveto
+
+    valid = True
+    
+    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
+    self.board[motox][motoy].update_position((motoy, motox))
+    current_has_moved = deepcopy(self.board[motox][motoy])
+    self.board[motox][motoy].has_moved = True
+    self.find_kings()
+
+    if self.current_turn:
+      if self.white_king.check_detection(self.board):
+        valid = False
+    
+    else:
+      if self.black_king.check_detection(self.board):
+        valid = False
+
+    #return back to original boardstate
+    self.board[motox][motoy].update_position((mofrx, mofry))
+    self.board[motox][motoy].has_moved = current_has_moved
+    self.board = current_board
+    self.find_kings()
+
+    if valid:
+      return False
+    
+    return True
+
+
+
 
 def main() -> None:
   """
