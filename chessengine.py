@@ -178,18 +178,17 @@ class Board:
 
     #by default the move is valid until a check is found
     valid = True
-    
-    #I save if the piece has moved
-    #current_has_moved = deepcopy(self.board[mofrx][mofry])
 
     #I update the position to the position being searched for cehcks
     self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
     self.board[motox][motoy].update_position((motoy, motox))
-    
     self.board[motox][motoy].has_moved = True
+
     #Update the king references
     self.find_kings()
 
+    #check whos turn it is and searches using that side's king
+    #if the king is in check check_detection returns True and the move isn't valid
     if self.current_turn:
       if self.white_king.check_detection(self.board):
         valid = False
@@ -198,19 +197,12 @@ class Board:
       if self.black_king.check_detection(self.board):
         valid = False
 
-    #return back to original boardstate
-    #self.board[motox][motoy].update_position((mofrx, mofry))
-    #self.board[motox][motoy].has_moved = current_has_moved
+    #return back to original position
     self.board = current_board
     self.find_kings()
 
-    if valid:
-      return False
-    
-    return True
-
-
-
+    #returns if the move is valid or not
+    return valid
 
 def main() -> None:
   """
