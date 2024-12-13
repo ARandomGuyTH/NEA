@@ -61,12 +61,17 @@ class Board:
     will find the kings on the board and return their coordinates.
     Firstly, the white king's position, then the black's
     """
+    #iterates through every piece on the board
     for rank in self.board:
       for piece in rank:
+        #checks if the piece is king
         if isinstance(piece, pieces.King):
+          #checks if the piece is white or Black
           if piece.COLOUR:
+            #stores a reference to the White King
             self.white_king = piece
           else:
+            #stores a reference to the Black King
             self.black_king = piece
 
   #takes in the board as input and displays it in text form (used for testing)
@@ -165,16 +170,24 @@ class Board:
     """
     given a move will check if that move results in check.
     """
+    #I make a deep copy of the current position to revert back to
     current_board = deepcopy(self.board)
+    #unpack the move
     mofrx, mofry = movefrom
     motox, motoy = moveto
 
+    #by default the move is valid until a check is found
     valid = True
     
+    #I save if the piece has moved
+    #current_has_moved = deepcopy(self.board[mofrx][mofry])
+
+    #I update the position to the position being searched for cehcks
     self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
     self.board[motox][motoy].update_position((motoy, motox))
-    current_has_moved = deepcopy(self.board[motox][motoy])
+    
     self.board[motox][motoy].has_moved = True
+    #Update the king references
     self.find_kings()
 
     if self.current_turn:
@@ -186,8 +199,8 @@ class Board:
         valid = False
 
     #return back to original boardstate
-    self.board[motox][motoy].update_position((mofrx, mofry))
-    self.board[motox][motoy].has_moved = current_has_moved
+    #self.board[motox][motoy].update_position((mofrx, mofry))
+    #self.board[motox][motoy].has_moved = current_has_moved
     self.board = current_board
     self.find_kings()
 
