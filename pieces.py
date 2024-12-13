@@ -177,16 +177,16 @@ class Piece:
     
     return moves  
 class Pawn(Piece):
-    def generate_moves(self, board : list) -> list:
-      """
-      Will generate all moves a pawn can make.
-      Moves will be a list of all possible moves.
-      A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
-      And, the position to move to in the second tuple.
-      """
-      moves = self.generate_pawn_moves(board)
-      return moves
-    
+  def generate_moves(self, board : list) -> list:
+    """
+    Will generate all moves a pawn can make.
+    Moves will be a list of all possible moves.
+    A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
+    And, the position to move to in the second tuple.
+    """
+    moves = self.generate_pawn_moves(board)
+    return moves
+  
   def update_position(self, position : tuple) -> bool:
     """
     Takes in a tuple of length 2 and updatest the position of the piece to that position.
