@@ -258,7 +258,10 @@ class King(Piece):
     Will determine if that piece, of an opposite colour to the king appears.
     """
     for move in moves:
+      #iterates through all the moves
       moveto = move[1]
+      #checks if the target square has an instance of a specific class. 
+      #(if the target square is a specific piece i.e - Queen)
       if isinstance(board[moveto[1]][moveto[0]], piece):
         return True
 
@@ -267,32 +270,38 @@ class King(Piece):
     """
     checks if the king is in check. Returns True if the king is.
     """
-    #only need to check the last move for kings bishops and queens!!!!
+    #only need to check the last move for rooks bishops and queens!!!!
     #!!!!OPTIMISE LATER!!!
+    #generates rook moves and checks for rooks and queens
     moves = self.generate_sliding_moves(board, diagonal_slide_direction)
     if self.check_moves(board, moves, Bishop):
       return True
     if self.check_moves(board, moves, Queen):
       return True
 
+    #generates bishop moves and checks for bishops and queens
     moves = self.generate_sliding_moves(board, straight_slide_direction)
     if self.check_moves(board, moves, Rook):
       return True
     if self.check_moves(board, moves, Queen):
       return True
     
+    #generates knight moves and checks for knights
     moves = self.generate_knight_moves(board)
     if self.check_moves(board, moves, Knight):
       return True
     
+    #generates Pawn moves and checks for Pawns
     moves = self.generate_pawn_moves(board)
     if self.check_moves(board, moves, Pawn):
       return True
 
+    #generates King moves and checks for Kings
     moves = self.generate_adjacent_moves(board)
     if self.check_moves(board, moves, King):
       return True
     
+    #if no checks found returns False to indicate king not in check
     return False
     
 
