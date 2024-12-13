@@ -186,6 +186,15 @@ class Pawn(Piece):
       """
       moves = self.generate_pawn_moves(board)
       return moves
+    
+  def update_position(self, position : tuple) -> bool:
+    """
+    Takes in a tuple of length 2 and updatest the position of the piece to that position.
+    If a pawn reaches the final rank will allow for promotion.
+    """
+    self.position = position
+    #false indicates a pawn will not be promoted
+    return True
 
 class Knight(Piece):
   def generate_moves(self, board : list) -> list:
