@@ -272,14 +272,14 @@ class King(Piece):
     """
     #only need to check the last move for rooks bishops and queens!!!!
     #!!!!OPTIMISE LATER!!!
-    #generates rook moves and checks for rooks and queens
+    #generates bishop moves and checks for bishops and queens
     moves = self.generate_sliding_moves(board, diagonal_slide_direction)
     if self.check_moves(board, moves, Bishop):
       return True
     if self.check_moves(board, moves, Queen):
       return True
 
-    #generates bishop moves and checks for bishops and queens
+    #generates rook moves and checks for rooks and queens
     moves = self.generate_sliding_moves(board, straight_slide_direction)
     if self.check_moves(board, moves, Rook):
       return True
