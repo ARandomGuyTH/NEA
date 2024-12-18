@@ -41,7 +41,7 @@ K_image = pygame.image.load("assets/whiteking.png").convert_alpha()
 P_image = pygame.image.load("assets/whitepawn.png").convert_alpha()
 
 #rescales the images to be the same size as the squares
-rescale_size = (square_size - 5, square_size - 5)
+rescale_size = (square_size, square_size)
 r_image = pygame.transform.scale(r_image, rescale_size)
 n_image = pygame.transform.scale(n_image, rescale_size)
 b_image = pygame.transform.scale(b_image, rescale_size)
