@@ -24,51 +24,23 @@ pygame.display.set_caption("Blobfish")
 
 #essential variables
 square_rect = None
-square_size = HEIGHT / 8
 
-#loads the images into the game 
-r_image = pygame.image.load("assets/blackrook.png").convert_alpha()
-n_image = pygame.image.load("assets/blackknight.png").convert_alpha()
-b_image = pygame.image.load("assets/blackbishop.png").convert_alpha()
-q_image = pygame.image.load("assets/blackqueen.png").convert_alpha()
-k_image = pygame.image.load("assets/blackking.png").convert_alpha()
-p_image = pygame.image.load("assets/blackpawn.png").convert_alpha()
-R_image = pygame.image.load("assets/whiterook.png").convert_alpha()
-N_image = pygame.image.load("assets/whiteknight.png").convert_alpha()
-B_image = pygame.image.load("assets/whitebishop.png").convert_alpha()
-Q_image = pygame.image.load("assets/whitequeen.png").convert_alpha()
-K_image = pygame.image.load("assets/whiteking.png").convert_alpha()
-P_image = pygame.image.load("assets/whitepawn.png").convert_alpha()
-
-#rescales the images to be the same size as the squares
-rescale_size = (square_size, square_size)
-r_image = pygame.transform.scale(r_image, rescale_size)
-n_image = pygame.transform.scale(n_image, rescale_size)
-b_image = pygame.transform.scale(b_image, rescale_size)
-q_image = pygame.transform.scale(q_image, rescale_size)
-k_image = pygame.transform.scale(k_image, rescale_size)
-p_image = pygame.transform.scale(p_image, rescale_size)
-R_image = pygame.transform.scale(R_image, rescale_size)
-N_image = pygame.transform.scale(N_image, rescale_size)
-B_image = pygame.transform.scale(B_image, rescale_size)
-Q_image = pygame.transform.scale(Q_image, rescale_size)
-K_image = pygame.transform.scale(K_image, rescale_size)
-P_image = pygame.transform.scale(P_image, rescale_size)
 
 #Sequence map used for getting images using FEN. Maps every character to a image filepath.
+#functions are called once at start I think not every time.
 IMAGE_MAP = {
-  "r" : r_image,
-  "n" : n_image,
-  "b" : b_image,
-  "q" : q_image,
-  "k" : k_image,
-  "p" : p_image,
-  "R" : R_image,
-  "N" : N_image,
-  "B" : B_image,
-  "Q" : Q_image,
-  "K" : K_image,
-  "P" : P_image
+  "r" : pygame.image.load("assets/blackrook.png").convert_alpha(),
+  "n" : pygame.image.load("assets/blackknight.png").convert_alpha(),
+  "b" : pygame.image.load("assets/blackbishop.png").convert_alpha(),
+  "q" : pygame.image.load("assets/blackqueen.png").convert_alpha(),
+  "k" : pygame.image.load("assets/blackking.png").convert_alpha(),
+  "p" : pygame.image.load("assets/blackpawn.png").convert_alpha(),
+  "R" : pygame.image.load("assets/whiterook.png").convert_alpha(),
+  "N" : pygame.image.load("assets/whiteknight.png").convert_alpha(),
+  "B" : pygame.image.load("assets/whitebishop.png").convert_alpha(),
+  "Q" : pygame.image.load("assets/whitequeen.png").convert_alpha(),
+  "K" : pygame.image.load("assets/whiteking.png").convert_alpha(),
+  "P" : pygame.image.load("assets/whitepawn.png").convert_alpha()
 }
 pygame.display.set_icon(IMAGE_MAP["P"])
 
@@ -76,13 +48,14 @@ def show_move_previews(square_rect, square_size) -> None:
    """
    If a piece is selected shows all move previews and highlights that square
    """
+   adjust = square_size / 2
    #highlights square
    pygame.draw.rect(screen, HIGHLIGHTED_SQUARE_COLOUR, square_rect)
    if chess_board.board[movefrom[0]][movefrom[1]]:
       #calls generate moves everyframe. Can be created when clicked.
       for move in move_previews:
         #calculate correct circle position
-        circle_x, circle_y = move[1][0] * square_size, move[1][1] * square_size
+        circle_x, circle_y = move[1][0] * square_size + adjust, move[1][1] * square_size + adjust
         #draws circle on the screen
         pygame.draw.circle(screen, ORANGE_COLOUR, (circle_x, circle_y), 15, 2) #radius 15, thickness 2
 
