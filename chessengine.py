@@ -202,7 +202,7 @@ class Board:
     self.find_kings()
 
     #returns if the move is valid or not
-    return valid
+    return not valid
 
 def main() -> None:
   """
