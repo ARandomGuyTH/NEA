@@ -9,8 +9,13 @@ chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
 #creates game screen
 pygame.init()
 SCREEN_SIZE = WIDTH, HEIGHT = (600, 600)
-screen = pygame.display.set_mode(SCREEN_SIZE)
+TIMER_SIZE = (100,600)
+total_screen = pygame.display.set_mode((600+100, 600))
+screen = pygame.Surface(SCREEN_SIZE)
 screen.fill("white")
+
+#menu stuff
+mediumFont = pygame.font.Font("Space_Grotesk/static/SpaceGrotesk-Medium.ttf", 28)
 
 #clock used for timing
 clock = pygame.time.Clock()
@@ -99,6 +104,33 @@ def draw_board() -> list:
       
   return squares
 
+def draw_main_menu():
+  """
+  creates main menu where player can select the side they want to play
+  """
+  #uses main menu image in order to display menu (easier then drawing using pygame)
+  main_menu = pygame.image.load("assets/menu.png").convert_alpha()
+  main_menu = pygame.transform.scale(main_menu, (WIDTH, HEIGHT))
+  screen.blit(main_menu, (0,0))
+
+
+  #creates
+  button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
+  button_surface.set_alpha(50)                #set transparent
+  button_surface.fill((255,255,255))
+  #creates and draws rect from surface
+  white_button = screen.blit(button_surface, (50,355)) 
+
+  button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
+  button_surface.set_alpha(50)                #set transparent
+  button_surface.fill((0,0,0))  
+  #creates and draws rect from surface        
+  black_button = screen.blit(button_surface, (600-50-232,355))
+
+  return white_button, black_button
+
+
+
 def main() -> None:
   """
   Main function where the gameloop is held
@@ -107,6 +139,12 @@ def main() -> None:
   global square_rect
   global movefrom
   global move_previews
+  white_button : pygame.rect.Rect
+  black_button : pygame.rect.Rect
+  squares = []
+  #if True, human is white side. If false, human is black side.
+  human_player_colour : bool
+  in_main_menu = True
   #game loop
   while True:
         #checks for player inputs
@@ -116,27 +154,51 @@ def main() -> None:
                 exit()
             #checks for mouse clicks
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-              pos = pygame.mouse.get_pos()
-              for i in range(8):
-                for j in range(8):
-                  if squares[i][j].collidepoint(pos):
-                    if can_move:
-                       moveto = (i, j)
-                       chess_board.update_board(movefrom, moveto)
-                       can_move = False
-                       square_rect = None
-                       move_previews = []
-                    else:
-                      square_rect = squares[i][j]
-                      movefrom = (i, j)
-                      can_move = True
+              pos = pygame.mouse.get_pos() # get mouse position
 
-                      if chess_board.board[movefrom[0]][movefrom[1]]:
-                        move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
-        
+              if in_main_menu:
+                if white_button.collidepoint(pos):
+                  human_player_colour = True
+                  in_main_menu = False
+                  
+                elif black_button.collidepoint(pos):
+                  human_player_colour = False
+                  in_main_menu = False
+              
+              elif human_player_colour == chess_board.current_turn:
+                for i in range(8):
+                  for j in range(8):
+                    if squares[i][j].collidepoint(pos):
+                      if can_move:
+                        moveto = (i, j)
+                        chess_board.update_board(movefrom, moveto)
+                        can_move = False
+                        square_rect = None
+                        move_previews = []
+                      else:
+                        square_rect = squares[i][j]
+                        movefrom = (i, j)
+                        can_move = True
+
+                        if chess_board.board[movefrom[0]][movefrom[1]]:
+                          move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
+              
+              else:
+                move = chess_board.select_ai_move()
+                valid = chess_board.update_board((move[0][1], move[0][0]), (move[1][1], move[1][0]))
+
         #draw the board.
-        screen.fill("white")
-        squares = draw_board()
+        total_screen.fill("white")
+        
+
+        if in_main_menu:
+           white_button, black_button = draw_main_menu()
+        
+        else:
+          squares = draw_board()
+
+        
+        total_screen.blit(screen, (0, 0))
 
 
         pygame.display.update()

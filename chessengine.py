@@ -1,5 +1,6 @@
 import pieces
 from copy import deepcopy
+import random
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
@@ -108,13 +109,17 @@ class Board:
     #returning bool if it has happened may be useful?
     return False
   
-  def validate_move(self, movefrom : tuple, moveto : tuple) -> bool:
+  def validate_move(self, movefrom : tuple, moveto : tuple, board=None) -> bool:
     """
     Takes in a move, and checks if the move is valid or not.
     """
+
+    if board is None:
+      board = self.board
+
     mofrx, mofry = movefrom
     motox, motoy = moveto
-    selected_piece = self.board[mofrx][mofry]
+    selected_piece = board[mofrx][mofry]
 
     #checks if a piece is being selected
     if selected_piece is None:
@@ -127,7 +132,7 @@ class Board:
     if mofrx == motox and mofry == motoy:
       return False
     
-    if ((mofry, mofrx), (motoy, motox)) not in selected_piece.generate_moves(self.board):
+    if ((mofry, mofrx), (motoy, motox)) not in selected_piece.generate_moves(board):
       return False
 
     #and to check for if the move creates checks.
@@ -155,14 +160,29 @@ class Board:
     #returning the updated value may be useful later
     return self.current_turn
   
-  def generate_legal_moves(self):
+  def generate_legal_moves(self, board=None):
+    """
+    function generates all the moves a given player can make
+    Iterates through every piece, checks if the piece is the right player's
+    If so extends the moves list to include their moves
+    """
+
+    #ensures function can be used easily for both 
+    if board is None:
+      board = self.board
+
     moves = []
+
+
     for rank in self.board:
       for piece in rank:
         if piece:
           if piece.COLOUR == self.current_turn:
-            for move in piece.generate_moves(self.board):
-              moves.append(move)
+              for move in piece.generate_moves(self.board):
+                if not self.incheck((move[0][1], move[0][0]), (move[1][1], move[1][0])):
+                #if not self.incheck(move[0], move[1]):
+                  moves.append(move)
+
 
     return moves
 
@@ -203,6 +223,11 @@ class Board:
 
     #returns if the move is valid or not
     return not valid
+
+  def select_ai_move(self):
+    moves = self.generate_legal_moves()
+    return random.choice(moves)
+
 
 def main() -> None:
   """
