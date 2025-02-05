@@ -57,13 +57,16 @@ class Board:
       board.append(temp_rank_list)   
     return board
   
-  def find_kings(self) -> None:
+  def find_kings(self , board=None) -> None:
     """
     will find the kings on the board and return their coordinates.
     Firstly, the white king's position, then the black's
     """
+    if board is None:
+      board = self.board
+
     #iterates through every piece on the board
-    for rank in self.board:
+    for rank in board:
       for piece in rank:
         #checks if the piece is king
         if isinstance(piece, pieces.King):
@@ -179,8 +182,10 @@ class Board:
         if piece:
           if piece.COLOUR == self.current_turn:
               for move in piece.generate_moves(self.board):
-                if not self.incheck((move[0][1], move[0][0]), (move[1][1], move[1][0])):
+                move = ((move[0][1], move[0][0]), (move[1][1], move[1][0]))
+                if not self.incheck(move[0], move[1]):
                 #if not self.incheck(move[0], move[1]):
+                  #moves.append(move)
                   moves.append(move)
 
 
@@ -200,12 +205,12 @@ class Board:
     valid = True
 
     #I update the position to the position being searched for cehcks
-    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-    self.board[motox][motoy].update_position((motoy, motox))
-    self.board[motox][motoy].has_moved = True
+    current_board[mofrx][mofry], current_board[motox][motoy] = None, current_board[mofrx][mofry]
+    current_board[motox][motoy].update_position((motoy, motox))
+    current_board[motox][motoy].has_moved = True
 
     #Update the king references
-    self.find_kings()
+    self.find_kings(current_board)
 
     #check whos turn it is and searches using that side's king
     #if the king is in check check_detection returns True and the move isn't valid
@@ -218,11 +223,14 @@ class Board:
         valid = False
 
     #return back to original position
-    self.board = current_board
     self.find_kings()
 
     #returns if the move is valid or not
     return not valid
+
+  def select_ai_move(self):
+    moves = self.generate_legal_moves()
+    return random.choice(moves)
 
   def select_ai_move(self):
     moves = self.generate_legal_moves()
@@ -241,3 +249,4 @@ def main() -> None:
 
 if __name__ == "__main__":
   main()
+
