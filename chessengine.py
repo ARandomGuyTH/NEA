@@ -104,7 +104,7 @@ class Board:
       if not self.incheck(movefrom, moveto):
         #swaps the pieces positions and updates the piece object
         self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-        self.board[motox][motoy].update_position((motoy, motox))
+        self.board = self.board[motox][motoy].update_position((motoy, motox), self.board)
         self.board[motox][motoy].has_moved = True
 
         self.update_turn()
@@ -182,8 +182,11 @@ class Board:
         if piece:
           if piece.COLOUR == self.current_turn:
               for move in piece.generate_moves(self.board):
-                move = ((move[0][1], move[0][0]), (move[1][1], move[1][0]))
+                temp = move
+                move = ((temp[0][1], temp[0][0]), (temp[1][1], temp[1][0]))
                 if not self.incheck(move[0], move[1]):
+                  print(move)
+
                 #if not self.incheck(move[0], move[1]):
                   #moves.append(move)
                   moves.append(move)
@@ -206,8 +209,7 @@ class Board:
 
     #I update the position to the position being searched for cehcks
     current_board[mofrx][mofry], current_board[motox][motoy] = None, current_board[mofrx][mofry]
-    current_board[motox][motoy].update_position((motoy, motox))
-    current_board[motox][motoy].has_moved = True
+    current_board = current_board[motox][motoy].update_position((motoy, motox), self.board)
 
     #Update the king references
     self.find_kings(current_board)
@@ -232,21 +234,35 @@ class Board:
     moves = self.generate_legal_moves()
     return random.choice(moves)
 
-  def select_ai_move(self):
-    moves = self.generate_legal_moves()
-    return random.choice(moves)
+  def force_move(self, movefrom : tuple, moveto : tuple, board=None) -> None:
+    #unpacks tuple for x and y coords
+    mofrx, mofry = movefrom
+    motox, motoy = moveto
+
+    #swaps the pieces positions and updates the piece object
+    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
+    self.board = self.board[motox][motoy].update_position((motoy, motox), self.board)
+
+    self.update_turn()
 
 
 def main() -> None:
   """
   main function for testing.
   """
-  INIT_SEQUENCE =  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+  INIT_SEQUENCE =  "r3k2r/8/8/8/8/8/8/R3K2R"
   board = Board(INIT_SEQUENCE)
   board.print_board()
-  print(board.board[5][1])
-  print(board.board[1][2])
+  print("-" * 8)
+
+  #board.force_move((7, 4), (7, 6))
+  board.force_move((7,4), (7,2))
+
+  #board.force_move((0, 4), (0,6))
+  board.force_move((0, 4), (0,2))
+
+  print("-" * 8)
+  board.print_board()
 
 if __name__ == "__main__":
   main()
-

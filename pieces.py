@@ -28,14 +28,15 @@ class Piece:
     
     return f"{colour} {self.__class__.__name__}" #returns the colour and piece as a f string
   
-  def update_position(self, position : tuple) -> bool:
+  def update_position(self, position : tuple, board :list) -> list:
     """
     Takes in a tuple of length 2 and updatest the position of the piece to that position.
     If a pawn reaches the final rank will allow for promotion.
     """
     self.position = position
+    self.has_moved = True
     #false indicates a pawn will not be promoted
-    return False
+    return board
 
   def check_piece(self, position : tuple, board : list) -> bool:
     """
@@ -187,15 +188,19 @@ class Pawn(Piece):
     moves = self.generate_pawn_moves(board)
     return moves
   
-  def update_position(self, position : tuple) -> bool:
+  
+  def update_position(self, position : tuple, board : list) -> list:
     """
     Takes in a tuple of length 2 and updatest the position of the piece to that position.
     If a pawn reaches the final rank will allow for promotion.
     """
     self.position = position
+    self.has_moved = True
     #false indicates a pawn will not be promoted
-    return True
-
+    if self.position[1] == 7 or self.position[1] == 0:
+      board[self.position[1]][self.position[0]] = Queen(self.COLOUR, self.position, "Q" if self.COLOUR is True else "q")
+    return board
+    
 class Knight(Piece):
   def generate_moves(self, board : list) -> list:
     """
@@ -242,6 +247,35 @@ class Queen(Piece):
 
 
 class King(Piece):
+  def update_position(self, position : tuple, board : list) -> list:
+    """
+    Takes in a tuple of length 2 and updatest the position of the piece to that position.
+    If a pawn reaches the final rank will allow for promotion.
+    """
+    distance = position[0] - self.position[0]
+    self.position = position
+    self.has_moved = True
+
+    #false indicates a pawn will not be promoted
+    if distance == 2: #check if the king has moved right 2
+      print("right")
+      print(board[0][position[0] - 1])
+      board[position[1]][position[0] - 1], board[position[1]][position[0] + 1] = board[position[1]][position[0] + 1], None # move rook left of king
+      board[position[1]][position[0] - 1].update_position((position[0] - 1, position[1]), board)
+      board[position[1]][position[0] - 1].has_moved = True
+
+    elif distance == -2: #check if the king has moved right 2
+      print("left")
+      print(board[position[1]][position[0] + 1])
+      board[position[1]][position[0] + 1], board[position[1]][position[0] - 2] = board[position[1]][position[0] - 2], None # move rook left of king
+      print(board[position[1]][position[0] + 1])
+      board[position[1]][position[0] + 1].update_position((position[0] + 1, position[1]), board)
+      board[position[1]][position[0] + 1].has_moved = True
+
+      
+
+    return board
+
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a King can make.
