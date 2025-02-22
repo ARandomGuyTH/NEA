@@ -123,7 +123,6 @@ class Board:
     mofrx, mofry = movefrom
     motox, motoy = moveto
     selected_piece = board[mofrx][mofry]
-
     #checks if a piece is being selected
     if selected_piece is None:
       return False
@@ -182,14 +181,11 @@ class Board:
         if piece:
           if piece.COLOUR == self.current_turn:
               for move in piece.generate_moves(self.board):
-                temp = move
-                move = ((temp[0][1], temp[0][0]), (temp[1][1], temp[1][0]))
-                if not self.incheck(move[0], move[1]):
-                  print(move)
+                movefry, movefrx = move[0]
+                movetoy, movetox = move[1]
 
-                #if not self.incheck(move[0], move[1]):
-                  #moves.append(move)
-                  moves.append(move)
+                if not self.incheck((movefrx, movefry), (movetox, movetoy)):
+                  moves.append(((movefrx, movefry), (movetox, movetoy)))
 
 
     return moves
@@ -207,9 +203,9 @@ class Board:
     #by default the move is valid until a check is found
     valid = True
 
-    #I update the position to the position being searched for cehcks
+    #I update the position to the position being searched for checks
     current_board[mofrx][mofry], current_board[motox][motoy] = None, current_board[mofrx][mofry]
-    current_board = current_board[motox][motoy].update_position((motoy, motox), self.board)
+    current_board = current_board[motox][motoy].update_position((motoy, motox), current_board) #THIS IS CAUSING PROBLEMS MAKING MOVES!!!!!
 
     #Update the king references
     self.find_kings(current_board)
@@ -217,12 +213,13 @@ class Board:
     #check whos turn it is and searches using that side's king
     #if the king is in check check_detection returns True and the move isn't valid
     if self.current_turn:
-      if self.white_king.check_detection(self.board):
+      if self.white_king.check_detection(current_board):
         valid = False
     
     else:
-      if self.black_king.check_detection(self.board):
+      if self.black_king.check_detection(current_board):
         valid = False
+        print(valid)
 
     #return back to original position
     self.find_kings()

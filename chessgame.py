@@ -185,7 +185,7 @@ def main() -> None:
               
               else:
                 move = chess_board.select_ai_move()
-                valid = chess_board.update_board((move[0][1], move[0][0]), (move[1][1], move[1][0]))
+                valid = chess_board.update_board(move[0], move[1])
 
         #draw the board.
         total_screen.fill("white")

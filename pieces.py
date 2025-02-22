@@ -196,9 +196,9 @@ class Pawn(Piece):
     """
     self.position = position
     self.has_moved = True
-    #false indicates a pawn will not be promoted
     if self.position[1] == 7 or self.position[1] == 0:
       board[self.position[1]][self.position[0]] = Queen(self.COLOUR, self.position, "Q" if self.COLOUR is True else "q")
+      board[self.position[1]][self.position[0]].has_moved = True
     return board
     
 class Knight(Piece):
@@ -258,21 +258,14 @@ class King(Piece):
 
     #false indicates a pawn will not be promoted
     if distance == 2: #check if the king has moved right 2
-      print("right")
-      print(board[0][position[0] - 1])
       board[position[1]][position[0] - 1], board[position[1]][position[0] + 1] = board[position[1]][position[0] + 1], None # move rook left of king
       board[position[1]][position[0] - 1].update_position((position[0] - 1, position[1]), board)
       board[position[1]][position[0] - 1].has_moved = True
 
     elif distance == -2: #check if the king has moved right 2
-      print("left")
-      print(board[position[1]][position[0] + 1])
       board[position[1]][position[0] + 1], board[position[1]][position[0] - 2] = board[position[1]][position[0] - 2], None # move rook left of king
-      print(board[position[1]][position[0] + 1])
       board[position[1]][position[0] + 1].update_position((position[0] + 1, position[1]), board)
       board[position[1]][position[0] + 1].has_moved = True
-
-      
 
     return board
 
@@ -284,6 +277,20 @@ class King(Piece):
     And, the position to move to in the second tuple.
     """
     moves = self.generate_adjacent_moves(board)
+
+    if not self.has_moved:
+      for direction in (-1, 1):
+        x = self.position[0]
+        while x > 0 and x < 7:
+          x += direction
+          piece = board[self.position[1]][x]
+          if isinstance(piece, Rook):
+            if not piece.has_moved:
+              move = (self.position, (self.position[0] + 2 * direction, self.position[1]))
+              moves.append(move)
+          elif piece:
+            break
+
     return moves
 
   def check_moves(self, board : list, moves : list, piece : Piece) -> bool:
@@ -339,7 +346,8 @@ class King(Piece):
     return False
     
 
-    
+def main():
+  print("aaaaaaaaaaaaaaaaaaaaaaaaa")
     
 if __name__ == "__main__":
-  print(1 * True)
+  main()
