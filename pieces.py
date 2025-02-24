@@ -71,33 +71,35 @@ class Piece:
 
     #checks for single pushing pawns
     moveto = (curr_x, curr_y + movement)
-    if board[moveto[1]][moveto[0]] is None:
-      move = (self.position, moveto)
-      moves.append(move)
+    if self.position[1] < 7 and self.position[1] > 0: #bound check for kings
+      if board[moveto[1]][moveto[0]] is None:
+        move = (self.position, moveto)
+        moves.append(move)
 
-      #checks for double pushing pawn
-      if not self.has_moved:
-        moveto = (curr_x, curr_y + movement * 2)
-        if board[moveto[1]][moveto[0]] is None:
-          move = (self.position, moveto)
-          moves.append(move)
+        #checks for double pushing pawn
+        if not self.has_moved:
+          moveto = (curr_x, curr_y + movement * 2)
+          if board[moveto[1]][moveto[0]] is None:
+            move = (self.position, moveto)
+            moves.append(move)
+    
+    if moveto[1] <= 7 and moveto[1] >= 0:
+      #checks if a piece is in the left diagonal (can take)
+      if self.position[0] != 0:
+        if board[curr_y + movement][curr_x - 1] is not None:
+          moveto = (curr_x - 1, curr_y + movement)
+          if self.check_piece(moveto, board):
+            move = (self.position, moveto)
+            moves.append(move)
       
-    #checks if a piece is in the left diagonal (can take)
-    if self.position[0] != 0:
-      if board[curr_y + movement][curr_x - 1] is not None:
-        moveto = (curr_x - 1, curr_y + movement)
-        if self.check_piece(moveto, board):
-          move = (self.position, moveto)
-          moves.append(move)
-    
-    #checks if a piece is in the right diagonal (can take)
-    if self.position[0] != 7:
-      if board[curr_y + movement][curr_x + 1] is not None:
-        moveto = (curr_x + 1, curr_y + movement)
-        if self.check_piece(moveto, board):
-          move = (self.position, moveto)
-          moves.append(move)
-    
+      #checks if a piece is in the right diagonal (can take)
+      if self.position[0] != 7:
+        if board[curr_y + movement][curr_x + 1] is not None:
+          moveto = (curr_x + 1, curr_y + movement)
+          if self.check_piece(moveto, board):
+            move = (self.position, moveto)
+            moves.append(move)
+      
     return moves
 
   def generate_sliding_moves(self, board : list, direction : tuple) -> list:
