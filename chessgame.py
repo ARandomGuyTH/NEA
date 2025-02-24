@@ -116,18 +116,33 @@ def draw_main_menu():
   screen.blit(main_menu, (0,0))
 
 
-  #creates
+  #creates play as white button
   button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
   button_surface.set_alpha(0)                #set transparent
   button_surface.fill((255,255,255))
   #creates and draws rect from surface
   white_button = screen.blit(button_surface, (50,355)) 
 
+   #creates play as black button
   button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
   button_surface.set_alpha(0)                #set transparent
   button_surface.fill((0,0,0))  
   #creates and draws rect from surface        
   black_button = screen.blit(button_surface, (600-50-232,355))
+
+  #creates plus button
+  button_surface = pygame.Surface((35,35))  #create surface of size 232, 102
+  button_surface.set_alpha(0)                #set transparent
+  button_surface.fill((255,255,255))
+  #creates and draws rect from surface
+  plus_button = screen.blit(button_surface, (405,532)) 
+
+  #creates minus button
+  button_surface = pygame.Surface((35,35))  #create surface of size 232, 102
+  button_surface.set_alpha(0)                #set transparent
+  button_surface.fill((255,255,255))
+  #creates and draws rect from surface
+  minus_button = screen.blit(button_surface, (165,532)) 
 
   return white_button, black_button
 
@@ -212,10 +227,7 @@ def main() -> None:
 
                         if chess_board.board[movefrom[0]][movefrom[1]]:
                           move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
-              
-              else:
-                move = chess_board.select_ai_move()
-                valid = chess_board.update_board(move[0], move[1])
+
 
         #draw the board.
         total_screen.fill("white")
@@ -228,10 +240,16 @@ def main() -> None:
           squares = draw_board()
 
           if chess_board.current_turn:
-            white_remaining_time -= DeltaTime
+            #subtracts time from white
+            white_remaining_time -= DeltaTime * 0.001
           
           else:
-            black_remaining_time -= DeltaTime
+            #subtracts time from black
+            black_remaining_time -= DeltaTime * 0.001
+          
+          if human_player_colour != chess_board.current_turn:
+            move = chess_board.select_ai_move()
+            valid = chess_board.update_board(move[0], move[1])
          
 
         draw_timer(black_remaining_time ,white_remaining_time)
@@ -242,7 +260,7 @@ def main() -> None:
 
         pygame.display.update()
         #DeltaTime is the time between frames, will be used for timing
-        DeltaTime = clock.tick(24)
+        DeltaTime = clock.tick(24) #time between frames in ms
 
 if __name__ == "__main__":
     main()
