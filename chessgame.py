@@ -13,7 +13,7 @@ TIMER_SIZE = (100,600)
 total_screen = pygame.display.set_mode((600+100, 600))
 screen = pygame.Surface(SCREEN_SIZE)
 screen.fill("white")
-timer_screen = pygame.surface(TIMER_SIZE)
+timer_screen = pygame.Surface(TIMER_SIZE)
 timer_screen.fill("white")
 
 #menu stuff
