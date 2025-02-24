@@ -278,6 +278,10 @@ def main() -> None:
           if human_player_colour != chess_board.current_turn:
             move = chess_board.select_ai_move()
             valid = chess_board.update_board(move[0], move[1])
+
+          #else:
+           # move = chess_board.select_ai_move()
+            #valid = chess_board.update_board(move[0], move[1])
          
 
         draw_timer(black_remaining_time ,white_remaining_time)
