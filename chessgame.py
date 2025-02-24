@@ -106,7 +106,7 @@ def draw_board() -> list:
       
   return squares
 
-def draw_main_menu():
+def draw_main_menu(time : int) -> tuple:
   """
   creates main menu where player can select the side they want to play
   """
@@ -114,6 +114,10 @@ def draw_main_menu():
   main_menu = pygame.image.load("assets/blobfish_with_timer.png").convert_alpha()
   main_menu = pygame.transform.scale(main_menu, (WIDTH, HEIGHT))
   screen.blit(main_menu, (0,0))
+
+  timer_Time = mediumFont.render(f"{time:.0f}:00", True, (255, 255, 255)) #creates font
+  timer_rect = timer_Time.get_rect(center = (300 , 550)) # creates rect around the font, moves to right spot
+  screen.blit(timer_Time, timer_rect) #draws font onto screen
 
 
   #creates play as white button
@@ -144,7 +148,7 @@ def draw_main_menu():
   #creates and draws rect from surface
   minus_button = screen.blit(button_surface, (165,532)) 
 
-  return white_button, black_button
+  return white_button, black_button, plus_button, minus_button
 
 def draw_timer(black_time : int, white_time : int) -> None:
    """
@@ -182,9 +186,13 @@ def main() -> None:
   global square_rect
   global movefrom
   global move_previews
+  
   white_button : pygame.rect.Rect
   black_button : pygame.rect.Rect
+  
   squares = []
+  timer_selector_time = 10
+  
   #if True, human is white side. If false, human is black side.
   human_player_colour : bool
   in_main_menu = True
@@ -209,7 +217,25 @@ def main() -> None:
                 elif black_button.collidepoint(pos):
                   human_player_colour = False
                   in_main_menu = False
-              
+                
+                elif plus_button.collidepoint(pos):
+                   if timer_selector_time < 10:
+                     timer_selector_time += 1
+                   elif timer_selector_time < 30:
+                      timer_selector_time += 5
+                   elif timer_selector_time < 60:
+                      timer_selector_time += 10
+
+                elif minus_button.collidepoint(pos):
+                   if timer_selector_time <= 0:
+                      pass
+                   elif timer_selector_time <= 10:
+                     timer_selector_time -= 1
+                   elif timer_selector_time <= 30:
+                      timer_selector_time -= 5
+                   elif timer_selector_time <= 60:
+                      timer_selector_time -= 10
+                      
               elif human_player_colour == chess_board.current_turn:
                 for i in range(8):
                   for j in range(8):
@@ -234,7 +260,9 @@ def main() -> None:
         
 
         if in_main_menu:
-           white_button, black_button = draw_main_menu()
+           white_button, black_button, plus_button, minus_button = draw_main_menu(timer_selector_time)
+           black_remaining_time = timer_selector_time * 60
+           white_remaining_time = timer_selector_time * 60
         
         else:
           squares = draw_board()
