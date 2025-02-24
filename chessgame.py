@@ -118,13 +118,13 @@ def draw_main_menu():
 
   #creates
   button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
-  button_surface.set_alpha(50)                #set transparent
+  button_surface.set_alpha(0)                #set transparent
   button_surface.fill((255,255,255))
   #creates and draws rect from surface
   white_button = screen.blit(button_surface, (50,355)) 
 
   button_surface = pygame.Surface((235,102))  #create surface of size 232, 102
-  button_surface.set_alpha(50)                #set transparent
+  button_surface.set_alpha(0)                #set transparent
   button_surface.fill((0,0,0))  
   #creates and draws rect from surface        
   black_button = screen.blit(button_surface, (600-50-232,355))
@@ -132,13 +132,24 @@ def draw_main_menu():
   return white_button, black_button
 
 def draw_timer(black_time : int, white_time : int) -> None:
-   white_timer = pygame.image.load("assets/chess_timer_white")
-   white_timer = pygame.transform.scale(white_timer, (100, 300))
-   timer_screen.blit(white_timer, (0,0))
+   """
+   function takes in black's time and white's time.
+   Draws the timer and time onto the screen.
+   """
+   #creates white timer
+   white_timer = pygame.image.load("assets/chess_timer_white.png") #loads image
+   white_timer = pygame.transform.scale(white_timer, (400, 100)) #resizes image
+   white_timer = pygame.transform.rotate(white_timer, 90) #draws image
+   timer_screen.blit(white_timer, (0,300)) # draws white timer onto screen
 
-   black_timer = pygame.image.load("assets/chess_timer_black")
-   black_timer = pygame.transform.scale(black_timer, (100, 300))
-   timer_screen.blit(white_timer, (0,0))
+   black_timer = pygame.image.load("assets/chess_timer_black.png") #loads image
+   black_timer = pygame.transform.scale(black_timer, (400, 100)) #resizes image
+   black_timer = pygame.transform.rotate(black_timer, -90) #draws image
+   timer_screen.blit(black_timer, (0,-100)) #draws black timer onto screen
+
+   #creates time remaining text for black
+   black_time_box = mediumFont.render(f"{black_time}", True, "white")
+   black_timer.blit(black_time_box, (20, 20))
 
 
 def main() -> None:
@@ -207,10 +218,10 @@ def main() -> None:
         else:
           squares = draw_board()
 
-        draw_timer()
+        draw_timer(0 ,0)
         
         total_screen.blit(screen, (0, 0))
-        total_screen.blit(timer_screen, (0, 600))
+        total_screen.blit(timer_screen, (600, 0))
 
 
         pygame.display.update()
