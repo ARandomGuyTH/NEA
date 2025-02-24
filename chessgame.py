@@ -13,6 +13,8 @@ TIMER_SIZE = (100,600)
 total_screen = pygame.display.set_mode((600+100, 600))
 screen = pygame.Surface(SCREEN_SIZE)
 screen.fill("white")
+timer_screen = pygame.surface(TIMER_SIZE)
+timer_screen.fill("white")
 
 #menu stuff
 mediumFont = pygame.font.Font("Space_Grotesk/static/SpaceGrotesk-Medium.ttf", 28)
@@ -109,7 +111,7 @@ def draw_main_menu():
   creates main menu where player can select the side they want to play
   """
   #uses main menu image in order to display menu (easier then drawing using pygame)
-  main_menu = pygame.image.load("assets/menu.png").convert_alpha()
+  main_menu = pygame.image.load("assets/blobfish_with_timer.png").convert_alpha()
   main_menu = pygame.transform.scale(main_menu, (WIDTH, HEIGHT))
   screen.blit(main_menu, (0,0))
 
@@ -129,6 +131,14 @@ def draw_main_menu():
 
   return white_button, black_button
 
+def draw_timer(black_time : int, white_time : int) -> None:
+   white_timer = pygame.image.load("assets/chess_timer_white")
+   white_timer = pygame.transform.scale(white_timer, (100, 300))
+   timer_screen.blit(white_timer, (0,0))
+
+   black_timer = pygame.image.load("assets/chess_timer_black")
+   black_timer = pygame.transform.scale(black_timer, (100, 300))
+   timer_screen.blit(white_timer, (0,0))
 
 
 def main() -> None:
@@ -197,8 +207,10 @@ def main() -> None:
         else:
           squares = draw_board()
 
+        draw_timer()
         
         total_screen.blit(screen, (0, 0))
+        total_screen.blit(timer_screen, (0, 600))
 
 
         pygame.display.update()
