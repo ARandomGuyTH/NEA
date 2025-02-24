@@ -17,7 +17,7 @@ timer_screen = pygame.Surface(TIMER_SIZE)
 timer_screen.fill("white")
 
 #menu stuff
-mediumFont = pygame.font.Font("Space_Grotesk/static/SpaceGrotesk-Medium.ttf", 28)
+mediumFont = pygame.font.Font(None, 45)
 
 #clock used for timing
 clock = pygame.time.Clock()
@@ -148,9 +148,16 @@ def draw_timer(black_time : int, white_time : int) -> None:
    timer_screen.blit(black_timer, (0,-100)) #draws black timer onto screen
 
    #creates time remaining text for black
-   black_time_box = mediumFont.render(f"{black_time}", True, "white")
-   black_timer.blit(black_time_box, (20, 20))
+   black_time_box = mediumFont.render(f"{int(black_time / 60)}:{int(black_time%60) :02d}", True, (255, 255, 255))#creates font
+   black_time_box = pygame.transform.rotate(black_time_box, 90) #rotates font
+   black_time_rect = black_time_box.get_rect(center = (50 , 200)) # creates rect around the font, moves to right spot
+   timer_screen.blit(black_time_box, black_time_rect) #draws font onto screen
 
+   #creates time remaining text for white
+   white_time_box = mediumFont.render(f"{int(white_time / 60)}:{int(white_time%60) :02d}", True, (0, 0, 0))#creates font
+   white_time_box = pygame.transform.rotate(white_time_box, 90) #rotates font
+   white_time_rect = black_time_box.get_rect(center = (50 , 400))# creates rect around the font, moves to right spot
+   timer_screen.blit(white_time_box, white_time_rect)#draws font onto screen
 
 def main() -> None:
   """
@@ -167,6 +174,8 @@ def main() -> None:
   human_player_colour : bool
   in_main_menu = True
   #game loop
+  black_remaining_time = 10.00 * 60
+  white_remaining_time = 10.00 * 60
   while True:
         #checks for player inputs
         for event in pygame.event.get():
@@ -218,7 +227,14 @@ def main() -> None:
         else:
           squares = draw_board()
 
-        draw_timer(0 ,0)
+          if chess_board.current_turn:
+            white_remaining_time -= DeltaTime
+          
+          else:
+            black_remaining_time -= DeltaTime
+         
+
+        draw_timer(black_remaining_time ,white_remaining_time)
         
         total_screen.blit(screen, (0, 0))
         total_screen.blit(timer_screen, (600, 0))
