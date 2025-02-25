@@ -219,7 +219,6 @@ class Board:
     else:
       if self.black_king.check_detection(current_board):
         valid = False
-        print(valid)
 
     #return back to original position
     self.find_kings()
