@@ -178,6 +178,22 @@ def draw_timer(black_time : int, white_time : int) -> None:
    white_time_rect = black_time_box.get_rect(center = (50 , 400))# creates rect around the font, moves to right spot
    timer_screen.blit(white_time_box, white_time_rect)#draws font onto screen
 
+def draw_win_lose(winner : bool,type : str) -> pygame.Rect:
+  #creates plus button
+  background = pygame.Surface((500,350))  #create surface of size 232, 102
+  background.set_alpha(200)                #set transparent
+  background.fill((255,253,208))
+  #creates and draws rect from surface
+  screen.blit(background, (50,125))
+
+  #creates plus button
+  background = pygame.Surface((35,35))  #create surface of size 232, 102
+  background.set_alpha(100)                #set transparent
+  background.fill((255,253,208))
+  #creates and draws rect from surface
+  screen.blit(background, (300,300))
+
+
 def main() -> None:
   """
   Main function where the gameloop is held
@@ -189,6 +205,9 @@ def main() -> None:
   
   white_button : pygame.rect.Rect
   black_button : pygame.rect.Rect
+
+  game_ended = False
+  end_reason = ""
   
   squares = []
   timer_selector_time = 10
@@ -236,7 +255,7 @@ def main() -> None:
                    elif timer_selector_time <= 60:
                       timer_selector_time -= 10
                       
-              elif human_player_colour == chess_board.current_turn:
+              elif human_player_colour == chess_board.current_turn and not game_ended:
                 for i in range(8):
                   for j in range(8):
                     if squares[i][j].collidepoint(pos):
@@ -264,25 +283,36 @@ def main() -> None:
            black_remaining_time = timer_selector_time * 60
            white_remaining_time = timer_selector_time * 60
         
-        else:
+        elif not game_ended:
           squares = draw_board()
 
           if chess_board.current_turn:
             #subtracts time from white
             white_remaining_time -= DeltaTime * 0.001
+            if white_remaining_time <= 0:
+              game_ended = True
+              end_reason = "timeout"
+              winner = False
           
           else:
             #subtracts time from black
             black_remaining_time -= DeltaTime * 0.001
-          
+            if black_remaining_time <= 0:
+              game_ended = True
+              end_reason = "timeout"
+              winner = True
+
           if human_player_colour != chess_board.current_turn:
             move = chess_board.select_ai_move()
             valid = chess_board.update_board(move[0], move[1])
 
-          else:
-            move = chess_board.select_ai_move()
-            valid = chess_board.update_board(move[0], move[1])
-         
+          #else:
+          #  move = chess_board.select_ai_move()
+          #  valid = chess_board.update_board(move[0], move[1])
+        
+        else:
+          squares = draw_board()
+          draw_win_lose(winner, end_reason)
 
         draw_timer(black_remaining_time ,white_remaining_time)
         
