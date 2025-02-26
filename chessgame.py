@@ -219,60 +219,60 @@ def main() -> None:
   black_remaining_time = 10.00 * 60
   white_remaining_time = 10.00 * 60
   while True:
-        #checks for player inputs
-        for event in pygame.event.get():
-            #checks if the player has exited the game
-            if event.type == pygame.QUIT:
-                exit()
-            #checks for mouse clicks
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-              pos = pygame.mouse.get_pos() # get mouse position
+    #checks for player inputs
+    for event in pygame.event.get():
+        #checks if the player has exited the game
+        if event.type == pygame.QUIT:
+            exit()
+        #checks for mouse clicks
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+          pos = pygame.mouse.get_pos() # get mouse position
 
-              if in_main_menu:
-                if white_button.collidepoint(pos):
-                  human_player_colour = True
-                  in_main_menu = False
+          if in_main_menu:
+            if white_button.collidepoint(pos):
+              human_player_colour = True
+              in_main_menu = False
+              
+            elif black_button.collidepoint(pos):
+              human_player_colour = False
+              in_main_menu = False
+            
+            elif plus_button.collidepoint(pos):
+                if timer_selector_time < 10:
+                  timer_selector_time += 1
+                elif timer_selector_time < 30:
+                  timer_selector_time += 5
+                elif timer_selector_time < 60:
+                  timer_selector_time += 10
+
+            elif minus_button.collidepoint(pos):
+                if timer_selector_time <= 0:
+                  pass
+                elif timer_selector_time <= 10:
+                  timer_selector_time -= 1
+                elif timer_selector_time <= 30:
+                  timer_selector_time -= 5
+                elif timer_selector_time <= 60:
+                  timer_selector_time -= 10
                   
-                elif black_button.collidepoint(pos):
-                  human_player_colour = False
-                  in_main_menu = False
-                
-                elif plus_button.collidepoint(pos):
-                   if timer_selector_time < 10:
-                     timer_selector_time += 1
-                   elif timer_selector_time < 30:
-                      timer_selector_time += 5
-                   elif timer_selector_time < 60:
-                      timer_selector_time += 10
+          elif human_player_colour == chess_board.current_turn and not game_ended:
+            for i in range(8):
+              for j in range(8):
+                if squares[i][j].collidepoint(pos):
+                  if can_move:
+                    moveto = (i, j)
+                    chess_board.update_board(movefrom, moveto)
+                    can_move = False
+                    square_rect = None
+                    move_previews = []
+                    
+                  else:
+                    square_rect = squares[i][j]
+                    movefrom = (i, j)
+                    can_move = True
 
-                elif minus_button.collidepoint(pos):
-                   if timer_selector_time <= 0:
-                      pass
-                   elif timer_selector_time <= 10:
-                     timer_selector_time -= 1
-                   elif timer_selector_time <= 30:
-                      timer_selector_time -= 5
-                   elif timer_selector_time <= 60:
-                      timer_selector_time -= 10
-                      
-              elif human_player_colour == chess_board.current_turn and not game_ended:
-                for i in range(8):
-                  for j in range(8):
-                    if squares[i][j].collidepoint(pos):
-                      if can_move:
-                        moveto = (i, j)
-                        chess_board.update_board(movefrom, moveto)
-                        can_move = False
-                        square_rect = None
-                        move_previews = []
-                      else:
-                        square_rect = squares[i][j]
-                        movefrom = (i, j)
-                        can_move = True
-
-                        if chess_board.board[movefrom[0]][movefrom[1]]:
-                          move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
-
+                    if chess_board.board[movefrom[0]][movefrom[1]]:
+                      move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
 
         #draw the board.
         total_screen.fill("white")
@@ -302,7 +302,7 @@ def main() -> None:
               end_reason = "timeout"
               winner = True
 
-          if human_player_colour != chess_board.current_turn:
+          if human_player_colour != chess_board.current_turn: #if it is ai turn
             move = chess_board.select_ai_move()
             valid = chess_board.update_board(move[0], move[1])
             print(valid)

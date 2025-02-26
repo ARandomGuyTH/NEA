@@ -242,7 +242,7 @@ class Board:
       
     if self.current_turn:
       for move in self.generate_legal_moves():
-        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2)
+        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
         v=v*-1
 
         if v>current_greatest_utility:
@@ -251,7 +251,7 @@ class Board:
     
     else:
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2)
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
 
         if v>current_greatest_utility:
             current_greatest_utility = v
@@ -322,7 +322,7 @@ class Board:
     else:
       return -1 #else draw so neither side wins.
 
-  def minimise(self, board, depth):
+  def minimise(self, board, depth, alpha, beta):
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
@@ -334,11 +334,15 @@ class Board:
     v = float('inf')
 
     for move in self.generate_legal_moves(board):
-      v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth))
+      v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
+
+      beta = min(beta, v)
+      if beta <= alpha:
+        break
     
     return v
   
-  def maximise(self, board, depth):
+  def maximise(self, board, depth, alpha, beta):
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
@@ -350,7 +354,11 @@ class Board:
     v = float('-inf')
 
     for move in self.generate_legal_moves(board):
-      v=max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth))
+      v=max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
+
+      alpha = max(beta, v)
+      if beta <= alpha:
+        break
     
     return v
     
