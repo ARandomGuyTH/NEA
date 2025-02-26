@@ -176,26 +176,29 @@ class Board:
     moves = []
 
 
-    for rank in self.board:
+    for rank in board:
       for piece in rank:
         if piece:
           if piece.COLOUR == self.current_turn:
-              for move in piece.generate_moves(self.board):
+              for move in piece.generate_moves(board):
                 movefry, movefrx = move[0]
                 movetoy, movetox = move[1]
 
-                if not self.incheck((movefrx, movefry), (movetox, movetoy)):
+                if not self.incheck((movefrx, movefry), (movetox, movetoy), board):
                   moves.append(((movefrx, movefry), (movetox, movetoy)))
 
 
     return moves
 
-  def incheck(self, movefrom : tuple, moveto : tuple) -> bool:
+  def incheck(self, movefrom : tuple, moveto : tuple, board=None) -> bool:
     """
     given a move will check if that move results in check.
     """
+    if board is None:
+      board = self.board
+
     #I make a deep copy of the current position to revert back to
-    current_board = deepcopy(self.board)
+    current_board = deepcopy(board)
     #unpack the move
     mofrx, mofry = movefrom
     motox, motoy = moveto
@@ -230,6 +233,8 @@ class Board:
     if self.terminal():
       return None
     
+    original_turn = self.current_turn
+    
     current_greatest_utility=float('-inf')
     current_best_move = None
     board = deepcopy(self.board)
@@ -237,7 +242,7 @@ class Board:
       
     if self.current_turn:
       for move in self.generate_legal_moves():
-        v= self.maximise(self.force_move(move[0], move[1]), board)
+        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2)
         v=v*-1
 
         if v>current_greatest_utility:
@@ -246,11 +251,13 @@ class Board:
     
     else:
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1]), board)
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2)
 
         if v>current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
+    
+    self.current_turn = original_turn #reset turn
     
     return current_best_move
 
@@ -294,7 +301,7 @@ class Board:
     for rank in self.board:
       for piece in rank:
         if piece:
-          if piece.colour:
+          if piece.COLOUR:
             evaluation += piece.value
           
           else:
@@ -319,7 +326,7 @@ class Board:
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return self.winner(board)
+      return self.winner(board) * 9999
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
@@ -327,7 +334,7 @@ class Board:
     v = float('inf')
 
     for move in self.generate_legal_moves(board):
-      v=min(v, self.maximise(self.force_move(move[0], move[1], board)))
+      v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth))
     
     return v
   
@@ -343,7 +350,7 @@ class Board:
     v = float('-inf')
 
     for move in self.generate_legal_moves(board):
-      v=max(v, self.minimise(self.force_move(move[0], move[1], board)))
+      v=max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth))
     
     return v
     
