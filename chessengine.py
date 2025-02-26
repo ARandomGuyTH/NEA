@@ -243,9 +243,8 @@ class Board:
     if self.current_turn:
       for move in self.generate_legal_moves():
         v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
-        v=v*-1
 
-        if v>current_greatest_utility:
+        if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
     
@@ -253,7 +252,7 @@ class Board:
       for move in self.generate_legal_moves():
         v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
 
-        if v>current_greatest_utility:
+        if v < current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
     
@@ -298,7 +297,7 @@ class Board:
     
     evaluation = 0
 
-    for rank in self.board:
+    for rank in board:
       for piece in rank:
         if piece:
           if piece.COLOUR:
@@ -306,7 +305,7 @@ class Board:
           
           else:
             evaluation -= piece.value
-  
+
     return evaluation
 
   def winner(self, board=None):
@@ -361,8 +360,6 @@ class Board:
         break
     
     return v
-    
-
 
 def main() -> None:
   """
