@@ -227,19 +227,126 @@ class Board:
     return not valid
 
   def select_ai_move(self):
-    moves = self.generate_legal_moves()
-    return random.choice(moves)
+    if self.terminal():
+      return None
+    
+    current_greatest_utility=float('-inf')
+    current_best_move = None
+    board = deepcopy(self.board)
+
+      
+    if self.current_turn:
+      for move in self.generate_legal_moves():
+        v= self.maximise(self.force_move(move[0], move[1]), board)
+        v=v*-1
+
+        if v>current_greatest_utility:
+            current_greatest_utility = v
+            current_best_move = move
+    
+    else:
+      for move in self.generate_legal_moves():
+        v = self.minimise(self.force_move(move[0], move[1]), board)
+
+        if v>current_greatest_utility:
+            current_greatest_utility = v
+            current_best_move = move
+    
+    return current_best_move
 
   def force_move(self, movefrom : tuple, moveto : tuple, board=None) -> None:
+    if board is None:
+      board = self.board
     #unpacks tuple for x and y coords
     mofrx, mofry = movefrom
     motox, motoy = moveto
 
     #swaps the pieces positions and updates the piece object
-    self.board[mofrx][mofry], self.board[motox][motoy] = None, self.board[mofrx][mofry]
-    self.board = self.board[motox][motoy].update_position((motoy, motox), self.board)
+    board[mofrx][mofry], board[motox][motoy] = None, board[mofrx][mofry]
+    board = board[motox][motoy].update_position((motoy, motox), board)
 
     self.update_turn()
+
+    return board
+
+
+  def terminal(self, board=None):
+    """
+    checks if the game has ended or not
+    """
+    if board is None:
+      board = self.board
+
+    winner = self.winner()
+
+    if winner is None:
+      #if no winner or draw game has not ended
+      return False
+
+    return True
+  
+  def evaluate(self, board=None):
+    if board is None:
+      board = self.board
+    
+    evaluation = 0
+
+    for rank in self.board:
+      for piece in rank:
+        if piece:
+          if piece.colour:
+            evaluation += piece.value
+          
+          else:
+            evaluation -= piece.value
+  
+    return evaluation
+
+  def winner(self, board=None):
+    if board is None:
+      board = self.board
+
+    if self.generate_legal_moves():
+      return None #none if no one wins
+
+    elif self.incheck((0,0), (0,0)):
+      return not self.current_turn #if king in check, checkmate so opposition wins
+
+    else:
+      return -1 #else draw so neither side wins.
+
+  def minimise(self, board, depth):
+    depth -= 1 #limit depth to not take too much time
+    if self.terminal(board):
+      #checks if game ends returns winner
+      return self.winner(board)
+
+    elif depth <= 0: #if depth reached return approximation
+      return self.evaluate(board)
+
+    v = float('inf')
+
+    for move in self.generate_legal_moves(board):
+      v=min(v, self.maximise(self.force_move(move[0], move[1], board)))
+    
+    return v
+  
+  def maximise(self, board, depth):
+    depth -= 1 #limit depth to not take too much time
+    if self.terminal(board):
+      #checks if game ends returns winner
+      return self.winner(board)
+
+    elif depth <= 0: #if depth reached return approximation
+      return self.evaluate(board)
+
+    v = float('-inf')
+
+    for move in self.generate_legal_moves(board):
+      v=max(v, self.minimise(self.force_move(move[0], move[1], board)))
+    
+    return v
+    
 
 
 def main() -> None:

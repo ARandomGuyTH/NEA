@@ -15,6 +15,7 @@ class Piece:
     self.position = position #keeps track of the position of the piece on the board
     self.FENKEY = FENkey #key used for finding appropriate image
     self.has_moved = False #checks if a piece has moved or not (for pawns, kings and rooks)
+    self.value : float
 
   def __str__(self) -> str:
     """
@@ -180,6 +181,8 @@ class Piece:
     
     return moves  
 class Pawn(Piece):
+  value = 1
+
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a pawn can make.
@@ -204,6 +207,8 @@ class Pawn(Piece):
     return board
     
 class Knight(Piece):
+  value = 3
+
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a Rook can make.
@@ -215,6 +220,7 @@ class Knight(Piece):
     return moves
 
 class Rook(Piece):
+  value = 5
   def generate_moves(self, board : list) -> list:
       """
       Will generate all moves a Rook can make.
@@ -226,6 +232,7 @@ class Rook(Piece):
       return moves
 
 class Bishop(Piece):
+  value = 3
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a Bishop can make.
@@ -237,6 +244,7 @@ class Bishop(Piece):
     return moves
 
 class Queen(Piece):
+  value = 9
   def generate_moves(self, board : list) -> list:
     """
     Will generate all moves a Queen can make.
@@ -249,6 +257,8 @@ class Queen(Piece):
 
 
 class King(Piece):
+  value = 999
+
   def update_position(self, position : tuple, board : list) -> list:
     """
     Takes in a tuple of length 2 and updatest the position of the piece to that position.
