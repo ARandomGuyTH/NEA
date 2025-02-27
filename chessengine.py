@@ -235,22 +235,23 @@ class Board:
     
     original_turn = self.current_turn
     
-    current_greatest_utility=float('-inf')
-    current_best_move = None
+    current_best_move = 1
     board = deepcopy(self.board)
 
       
     if self.current_turn:
+      current_greatest_utility=float('-inf')
       for move in self.generate_legal_moves():
-        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
+        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
     
     else:
+      current_greatest_utility=float('inf')
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
 
         if v < current_greatest_utility:
             current_greatest_utility = v
@@ -301,10 +302,10 @@ class Board:
       for piece in rank:
         if piece:
           if piece.COLOUR:
-            evaluation += piece.value
+            evaluation += piece.pst[piece.position[1]][piece.position[0]]
           
           else:
-            evaluation -= piece.value
+            evaluation -= piece.pst[7 - piece.position[1]][piece.position[0]]
 
     return evaluation
 
