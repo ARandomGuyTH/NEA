@@ -235,27 +235,30 @@ class Board:
     
     original_turn = self.current_turn
     
-    current_best_move = 1
+    current_best_move = ((0, 0), (0, 0))
     board = deepcopy(self.board)
+    current_greatest_utility = float('-inf')
 
       
     if self.current_turn:
-      current_greatest_utility=float('-inf')
       for move in self.generate_legal_moves():
-        v= self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
+        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
+            print(current_greatest_utility)
     
     else:
-      current_greatest_utility=float('inf')
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = v * -1
 
-        if v < current_greatest_utility:
+        if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
+            print(current_greatest_utility)
+
     
     self.current_turn = original_turn #reset turn
     
@@ -275,7 +278,6 @@ class Board:
     self.update_turn()
 
     return board
-
 
   def terminal(self, board=None):
     """
@@ -302,10 +304,12 @@ class Board:
       for piece in rank:
         if piece:
           if piece.COLOUR:
-            evaluation += piece.pst[piece.position[1]][piece.position[0]]
+            #evaluation += piece.pst[piece.position[0]][piece.position[1]]
+            evaluation += piece.value
           
           else:
-            evaluation -= piece.pst[7 - piece.position[1]][piece.position[0]]
+            #evaluation -= piece.pst[7 - piece.position[0]][piece.position[1]]
+            evaluation += piece.value
 
     return evaluation
 
@@ -336,9 +340,10 @@ class Board:
     for move in self.generate_legal_moves(board):
       v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
 
-      beta = min(beta, v)
-      if beta <= alpha:
+      if v <= alpha:
         break
+
+      beta = min(beta, v)
     
     return v
   
@@ -354,11 +359,12 @@ class Board:
     v = float('-inf')
 
     for move in self.generate_legal_moves(board):
-      v=max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
+      v = max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
 
-      alpha = max(beta, v)
-      if beta <= alpha:
+      if v >= beta:
         break
+
+      alpha = max(alpha, v)
     
     return v
 
