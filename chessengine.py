@@ -1,6 +1,7 @@
 import pieces
 from copy import deepcopy
 import random
+from dynamicPriorityQueue import Dynamicqueue
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
@@ -173,7 +174,7 @@ class Board:
     if board is None:
       board = self.board
 
-    moves = []
+    moves = Dynamicqueue()
 
 
     for rank in board:
@@ -185,10 +186,20 @@ class Board:
                 movetoy, movetox = move[1]
 
                 if not self.incheck((movefrx, movefry), (movetox, movetoy), board):
-                  moves.append(((movefrx, movefry), (movetox, movetoy)))
+                  value = 0 #default value 0
+
+                  if board[movetox][movetoy]: #heuristically estimate value of move to search first
+                    piece = board[movetoy][movetox]
+                    valueto = piece.pst[piece.position[0]][piece.position[1]] + piece.value #estimate value of piece being taken
+
+                    piece = board[movefrx][movefry]
+                    valuefrom = piece.pst[piece.position[0]][piece.position[1]] + piece.value
+                    value = board[movetox][movetoy].value - board[movefrx][movefry].value
+
+                moves.enQueue(((movefrx, movefry), (movetox, movetoy),value))
 
 
-    return moves
+    return moves.get_moves()
 
   def incheck(self, movefrom : tuple, moveto : tuple, board=None) -> bool:
     """
