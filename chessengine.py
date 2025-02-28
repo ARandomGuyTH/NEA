@@ -242,23 +242,20 @@ class Board:
       
     if self.current_turn:
       for move in self.generate_legal_moves():
-        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
-            print(current_greatest_utility)
     
     else:
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
         v = v * -1
 
         if v > current_greatest_utility:
             current_greatest_utility = v
             current_best_move = move
-            print(current_greatest_utility)
-
     
     self.current_turn = original_turn #reset turn
     
@@ -304,12 +301,12 @@ class Board:
       for piece in rank:
         if piece:
           if piece.COLOUR:
-            #evaluation += piece.pst[piece.position[0]][piece.position[1]]
-            evaluation += piece.value
+            evaluation += piece.pst[piece.position[0]][piece.position[1]] + piece.value
+            #evaluation += piece.value
           
           else:
-            #evaluation -= piece.pst[7 - piece.position[0]][piece.position[1]]
-            evaluation += piece.value
+            evaluation -= piece.pst[7 - piece.position[0]][piece.position[1]] + piece.value
+            #evaluation -= piece.value
 
     return evaluation
 
@@ -327,6 +324,7 @@ class Board:
       return -1 #else draw so neither side wins.
 
   def minimise(self, board, depth, alpha, beta):
+    self.current_turn = BLACK
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
@@ -339,7 +337,7 @@ class Board:
 
     for move in self.generate_legal_moves(board):
       v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
-
+      
       if v <= alpha:
         break
 
@@ -348,10 +346,11 @@ class Board:
     return v
   
   def maximise(self, board, depth, alpha, beta):
+    self.current_turn = WHITE
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return self.winner(board)
+      return self.winner(board) * 9999
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
@@ -360,7 +359,7 @@ class Board:
 
     for move in self.generate_legal_moves(board):
       v = max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
-
+      
       if v >= beta:
         break
 
