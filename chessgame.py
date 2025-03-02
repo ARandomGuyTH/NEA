@@ -186,12 +186,18 @@ def draw_win_lose(winner : bool,type : str) -> pygame.Rect:
   #creates and draws rect from surface
   screen.blit(background, (50,125))
 
-  #creates plus button
+  #creates back to menu button
   background = pygame.Surface((35,35))  #create surface of size 232, 102
   background.set_alpha(100)                #set transparent
-  background.fill((255,253,208))
+  background.fill((0,0,0))
   #creates and draws rect from surface
   screen.blit(background, (300,300))
+
+  winner_text = "white wins" if winner else "draw" if winner == -1 else "black wins"
+  #creates time remaining text for white
+  winner_text_box = mediumFont.render(f"{winner_text} : {type}", True, (0, 0, 0)) #creates font
+  winner_time_rect = winner_text_box.get_rect(center = (300 , 200)) # creates rect around the font, moves to right spot
+  screen.blit(winner_text_box, winner_time_rect) #draws font onto screen
 
 
 def main() -> None:
@@ -207,6 +213,7 @@ def main() -> None:
   black_button : pygame.rect.Rect
 
   game_ended = False
+  winner = True
   end_reason = ""
   
   squares = []
@@ -278,7 +285,7 @@ def main() -> None:
             else:
               game_ended = True
               winner = chess_board.winner()
-              end_reason = "idk"
+              end_reason = "stalemate" if winner == -1 else "checkmate"
 
         #draw the board.
         total_screen.fill("white")
@@ -316,7 +323,7 @@ def main() -> None:
             else:
               game_ended = True
               winner = chess_board.winner()
-              end_reason = "idk"
+              end_reason = "stalemate" if winner == -1 else "checkmate"
 
           #else:
           #  move = chess_board.select_ai_move()

@@ -365,11 +365,11 @@ class Board:
     #if the king is in check check_detection returns True and the move isn't valid
     if self.current_turn:
       if self.white_king.check_detection(board):
-        return not self.current_turn
+        return BLACK
     
     else:
       if self.black_king.check_detection(board):
-        return self.current_turn
+        return WHITE
 
       return -1 #else draw so neither side wins.
 
@@ -378,7 +378,7 @@ class Board:
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return self.winner(board) * 9999
+      return 9999 if self.winner(board) else -9999
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
@@ -400,7 +400,7 @@ class Board:
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return self.winner(board) * 9999
+      return 9999 if self.winner(board) else -9999
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
