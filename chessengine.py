@@ -1,7 +1,6 @@
 import pieces
 from copy import deepcopy
 import random
-from dynamicPriorityQueue import Dynamicqueue
   
 #FEN chess notation for a starting board (means if INIT_SEQUENCE is changed the program can be used for any game state i.e. puzzles)
 #White pieces are uppercase, black pieces are lower case
@@ -174,7 +173,7 @@ class Board:
     if board is None:
       board = self.board
 
-    moves = Dynamicqueue()
+    moves = []
 
 
     for rank in board:
@@ -186,20 +185,52 @@ class Board:
                 movetoy, movetox = move[1]
 
                 if not self.incheck((movefrx, movefry), (movetox, movetoy), board):
-                  value = 0 #default value 0
+                  moves.append(((movefrx, movefry), (movetox, movetoy)))
 
-                  if board[movetox][movetoy]: #heuristically estimate value of move to search first
-                    piece = board[movetoy][movetox]
-                    valueto = piece.pst[piece.position[0]][piece.position[1]] + piece.value #estimate value of piece being taken
+    self.quickSort(moves, 0, len(moves) - 1, board)
+    return moves
+  
+  def score_move(self, move, board=None):
+      if board is None:
+        board = self.board
+      
+      movefrx, movefry = move[0]
+      motox, motoy = move[1]
+      
+      if board[motox][motoy]: #prioritises capturing high value pieces with low value
+        return 10 * board[motox][motoy].value - board[movefrx][movefry].value
+      
+      return 0
 
-                    piece = board[movefrx][movefry]
-                    valuefrom = piece.pst[piece.position[0]][piece.position[1]] + piece.value
-                    value = board[movetox][movetoy].value - board[movefrx][movefry].value
 
-                moves.enQueue(((movefrx, movefry), (movetox, movetoy),value))
+  def quickSort(self, array, leftptr, righptr, board):
+    if leftptr < righptr: #if array contains at least 2 elements
+      partitionptr = self.partition(array, leftptr, righptr, board) #finds pointer position
+      self.quickSort(array, leftptr, partitionptr - 1, board) #sort elements to the left of the partition
+      self.quickSort(array, partitionptr + 1, righptr, board) #sort elements to the right of the partition
+  
+  def partition(self, array, leftptr, rightptr, board):
+    i = leftptr
+    j = rightptr - 1
 
+    pivot = self.score_move(array[rightptr], board)
 
-    return moves.get_moves()
+    while i < j: #while the pointers have not crossed
+      while i < rightptr and self.score_move(array[i], board) < pivot:
+        #keep incrimenting until end of section reached or value at pointer i is less then pivot
+        i += 1
+
+      while j > leftptr and self.score_move(array[j], board) >= pivot:
+        #keep deincrimenting until end of section reached or value at pointer j is greater then pivot
+        j -= 1
+      
+      if i < j: #if pointers have not crossed swap the elements
+        array[i], array[j] = array[j], array[i]
+      
+    if self.score_move(array[i], board) > pivot: #if i and j cross if value of i is greater then pivot swap the elements
+      array[i], array[rightptr] = array[rightptr], array[i]
+    
+    return i # i is where array is split to continue to divide and conquer
 
   def incheck(self, movefrom : tuple, moveto : tuple, board=None) -> bool:
     """
@@ -235,7 +266,7 @@ class Board:
         valid = False
 
     #return back to original position
-    self.find_kings()
+    self.find_kings(current_board)
 
     #returns if the move is valid or not
     return not valid
@@ -253,7 +284,7 @@ class Board:
       
     if self.current_turn:
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
@@ -261,7 +292,7 @@ class Board:
     
     else:
       for move in self.generate_legal_moves():
-        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 2, float('-inf'), float('inf'))
+        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
         v = v * -1
 
         if v > current_greatest_utility:
@@ -325,13 +356,21 @@ class Board:
     if board is None:
       board = self.board
 
-    if self.generate_legal_moves():
+    if self.generate_legal_moves(board):
       return None #none if no one wins
+    
+    self.find_kings(board)
 
-    elif self.incheck((0,0), (0,0)):
-      return not self.current_turn #if king in check, checkmate so opposition wins
-
+    #check whos turn it is and searches using that side's king
+    #if the king is in check check_detection returns True and the move isn't valid
+    if self.current_turn:
+      if self.white_king.check_detection(board):
+        return not self.current_turn
+    
     else:
+      if self.black_king.check_detection(board):
+        return self.current_turn
+
       return -1 #else draw so neither side wins.
 
   def minimise(self, board, depth, alpha, beta):

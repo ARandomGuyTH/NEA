@@ -256,23 +256,29 @@ def main() -> None:
                   timer_selector_time -= 10
                   
           elif human_player_colour == chess_board.current_turn and not game_ended:
-            for i in range(8):
-              for j in range(8):
-                if squares[i][j].collidepoint(pos):
-                  if can_move:
-                    moveto = (i, j)
-                    chess_board.update_board(movefrom, moveto)
-                    can_move = False
-                    square_rect = None
-                    move_previews = []
-                    
-                  else:
-                    square_rect = squares[i][j]
-                    movefrom = (i, j)
-                    can_move = True
+            if chess_board.generate_legal_moves():
+              for i in range(8):
+                for j in range(8):
+                  if squares[i][j].collidepoint(pos):
+                    if can_move:
+                      moveto = (i, j)
+                      chess_board.update_board(movefrom, moveto)
+                      can_move = False
+                      square_rect = None
+                      move_previews = []
+                      
+                    else:
+                      square_rect = squares[i][j]
+                      movefrom = (i, j)
+                      can_move = True
 
-                    if chess_board.board[movefrom[0]][movefrom[1]]:
-                      move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
+                      if chess_board.board[movefrom[0]][movefrom[1]]:
+                        move_previews = chess_board.board[movefrom[0]][movefrom[1]].generate_moves(chess_board.board)
+            
+            else:
+              game_ended = True
+              winner = chess_board.winner()
+              end_reason = "idk"
 
         #draw the board.
         total_screen.fill("white")
@@ -303,8 +309,14 @@ def main() -> None:
               winner = True
 
           if human_player_colour != chess_board.current_turn: #if it is ai turn
-            move = chess_board.select_ai_move()
-            valid = chess_board.update_board(move[0], move[1])
+            if chess_board.generate_legal_moves():
+              move = chess_board.select_ai_move()
+              valid = chess_board.update_board(move[0], move[1])
+            
+            else:
+              game_ended = True
+              winner = chess_board.winner()
+              end_reason = "idk"
 
           #else:
           #  move = chess_board.select_ai_move()
