@@ -1,3 +1,4 @@
+from copy import deepcopy
 #default class that all pieces inherit from
 
 #direction for all sliding pieces. Directions are (x, y), values should be 1 (forward), -1 (backwards), or 0 (doesnt move)
@@ -351,20 +352,28 @@ class King(Piece):
     And, the position to move to in the second tuple.
     """
     moves = self.generate_adjacent_moves(board)
+    original_position = deepcopy(self.position) #save original position
 
     if not self.has_moved:
       for direction in (-1, 1):
-        x = self.position[0]
+        if self.check_detection(board):
+          break
+
+        x = original_position[0]
         while x > 0 and x < 7:
           x += direction
-          piece = board[self.position[1]][x]
-          if isinstance(piece, Rook):
+          piece = board[original_position[1]][x]
+          self.position = (x, original_position[1])
+          if self.check_detection(board):
+            break
+          elif isinstance(piece, Rook):
             if not piece.has_moved:
-              move = (self.position, (self.position[0] + 2 * direction, self.position[1]))
+              move = (original_position, (original_position[0] + 2 * direction, original_position[1]))
               moves.append(move)
           elif piece:
             break
-
+    
+    self.position = original_position
     return moves
 
   def check_moves(self, board : list, moves : list, piece : Piece) -> bool:
