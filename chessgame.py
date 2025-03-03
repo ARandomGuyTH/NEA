@@ -1,7 +1,6 @@
 import chessengine
 from sys import exit
 import pygame
-import multiprocessing
 
 #creates a board object
 chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
@@ -209,8 +208,6 @@ def main() -> None:
   global square_rect
   global movefrom
   global move_previews
-
-  processing_AI_move = False
   
   white_button : pygame.rect.Rect
   black_button : pygame.rect.Rect
@@ -266,7 +263,6 @@ def main() -> None:
                   timer_selector_time -= 10
                   
           elif human_player_colour == chess_board.current_turn and not game_ended:
-            processing_AI_move = False
             if chess_board.generate_legal_moves():
               for i in range(8):
                 for j in range(8):
@@ -319,12 +315,10 @@ def main() -> None:
               end_reason = "timeout"
               winner = True
 
-          if human_player_colour != chess_board.current_turn and not processing_AI_move: #if it is ai turn
+          if human_player_colour != chess_board.current_turn: #if it is ai turn
             if chess_board.generate_legal_moves():
-              chess_board.print_board()
-              processing_AI_move = True
-              p1 = multiprocessing.Process(target=select_ai_move, args=[chess_board])
-              p1.start()
+              move = chess_board.select_ai_move()
+              valid = chess_board.update_board(move[0], move[1])
             
             else:
               game_ended = True
@@ -348,13 +342,6 @@ def main() -> None:
         pygame.display.update()
         #DeltaTime is the time between frames, will be used for timing
         DeltaTime = clock.tick(24) #time between frames in ms
-  
-def select_ai_move(chess_board):
-  print("hi")
-  move = chess_board.select_ai_move()
-  print("yay1")
-  valid = chess_board.update_board(move[0], move[1])
-  chess_board.print_board()
 
 if __name__ == "__main__":
     main()
