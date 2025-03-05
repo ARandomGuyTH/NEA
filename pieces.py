@@ -351,26 +351,30 @@ class King(Piece):
     A move will be a tuple of 2 tuples, containing the position to move from in the first tuple.
     And, the position to move to in the second tuple.
     """
-    moves = self.generate_adjacent_moves(board)
+    moves = self.generate_adjacent_moves(board) #generate adjacent moves
     original_position = deepcopy(self.position) #save original position
 
-    if not self.has_moved:
-      for direction in (-1, 1):
-        if self.check_detection(board):
-          break
+    if not self.has_moved: #if king hasnt moved
+      for direction in (-1, 1): #check left and right
+        if self.check_detection(board): #if king being attacked
+          break #king can't castle so break
 
         x = original_position[0]
         while x > 0 and x < 7:
+          #iterate until the end of board or piece has been reached
           x += direction
           piece = board[original_position[1]][x]
-          self.position = (x, original_position[1])
+          self.position = (x, original_position[1]) #update king position to check for attacked square
           if self.check_detection(board):
+            #if square is being attacked break loop as can't castle that side
             break
           elif isinstance(piece, Rook):
+            #if rook and unmoved the king can castle so append move
             if not piece.has_moved:
               move = (original_position, (original_position[0] + 2 * direction, original_position[1]))
               moves.append(move)
           elif piece:
+            #if non rook piece is blocking we can't castle so break loop
             break
     
     self.position = original_position

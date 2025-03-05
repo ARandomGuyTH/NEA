@@ -33,6 +33,7 @@ class Board:
     self.current_turn = WHITE
 
     self.find_kings()
+    self.AI_making_move = False
 
   def create_board(self, FEN : str) -> list:
     """
@@ -284,7 +285,7 @@ class Board:
       
     if self.current_turn:
       for move in self.generate_legal_moves():
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
@@ -292,7 +293,7 @@ class Board:
     
     else:
       for move in self.generate_legal_moves():
-        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 3, float('-inf'), float('inf'))
         v = v * -1
 
         if v > current_greatest_utility:

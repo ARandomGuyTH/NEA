@@ -6,6 +6,7 @@ from threading import Thread
 #creates a board object
 chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
 #chess_board = chessengine.Board("k7/8/8/8/8/1R6/2R6/K7")
+current_turn = chess_board.current_turn
 
 #creates game screen
 pygame.init()
@@ -230,7 +231,7 @@ def main() -> None:
   timer_selector_time = 10
   
   #if True, human is white side. If false, human is black side.
-  human_player_colour : bool
+  human_player_colour = True
   in_main_menu = True
   #game loop
   black_remaining_time = 10.00 * 60
@@ -279,8 +280,7 @@ def main() -> None:
                 in_main_menu = True
              
                   
-          elif human_player_colour == chess_board.current_turn:
-            AI_making_move = False
+          elif human_player_colour == current_turn:
             if chess_board.generate_legal_moves():
               for i in range(8):
                 for j in range(8):
@@ -291,6 +291,7 @@ def main() -> None:
                       can_move = False
                       square_rect = None
                       move_previews = []
+                      current_turn = chess_board.current_turn
                       
                     else:
                       square_rect = squares[i][j]
@@ -307,7 +308,6 @@ def main() -> None:
 
     #draw the board.
     total_screen.fill("white")
-    
 
     if in_main_menu:
         white_button, black_button, plus_button, minus_button = draw_main_menu(timer_selector_time)
@@ -317,7 +317,7 @@ def main() -> None:
     elif not game_ended:
       squares = draw_board()
 
-      if chess_board.current_turn:
+      if current_turn:
         #subtracts time from white
         white_remaining_time -= DeltaTime * 0.001
         if white_remaining_time <= 0:
@@ -333,9 +333,9 @@ def main() -> None:
           end_reason = "timeout"
           winner = True
 
-      if human_player_colour != chess_board.current_turn and not AI_making_move: #if it is ai turn
+      if human_player_colour != current_turn and not chess_board.AI_making_move: #if it is ai turn
         if chess_board.generate_legal_moves():
-          AI_making_move = True
+          chess_board.AI_making_move = True
           Thread(target=make_AI_move).start()
         
         else:
@@ -356,14 +356,21 @@ def main() -> None:
     total_screen.blit(screen, (0, 0))
     total_screen.blit(timer_screen, (600, 0))
 
+    if chess_board.AI_making_move:
+      current_turn = not human_player_colour
+    else:
+      current_turn = human_player_colour
+
+
 
     pygame.display.update()
     #DeltaTime is the time between frames, will be used for timing
     DeltaTime = clock.tick(24) #time between frames in ms
 
 def make_AI_move():
-   move = chess_board.select_ai_move()
-   valid = chess_board.update_board(move[0], move[1])
+  move = chess_board.select_ai_move()
+  valid = chess_board.update_board(move[0], move[1])
+  chess_board.AI_making_move = False
 
 if __name__ == "__main__":
     main()
