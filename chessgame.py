@@ -196,13 +196,15 @@ def draw_win_lose(winner : bool,type : str) -> pygame.Rect:
 
   return_text = mediumFont.render("return to menu", True, (0, 0, 0)) #creates font
   return_text_rect = return_text.get_rect(topleft = (190 , 320)) # creates rect around the font, moves to right spot
-  screen.blit(return_text, return_text_rect) #draws font onto screen
+  return_button = screen.blit(return_text, return_text_rect) #draws font onto screen
   
   winner_text = "white wins" if winner == 1 else "draw" if winner == -1 else "black wins"
   #creates time remaining text for white
   winner_text_box = mediumFont.render(f"{winner_text} : {type}", True, (0, 0, 0)) #creates font
   winner_time_rect = winner_text_box.get_rect(center = (300 , 200)) # creates rect around the font, moves to right spot
   screen.blit(winner_text_box, winner_time_rect) #draws font onto screen
+
+  return return_button
 
 
 def main() -> None:
@@ -213,6 +215,7 @@ def main() -> None:
   global square_rect
   global movefrom
   global move_previews
+  global chess_board
   
   AI_making_move = False
   
@@ -268,8 +271,15 @@ def main() -> None:
                   timer_selector_time -= 5
                 elif timer_selector_time <= 60:
                   timer_selector_time -= 10
+
+          elif game_ended:
+             if return_button.collidepoint(pos):
+                chess_board = chessengine.Board(chessengine.DEFAULT_FEN)
+                game_ended = False
+                in_main_menu = True
+             
                   
-          elif human_player_colour == chess_board.current_turn and not game_ended:
+          elif human_player_colour == chess_board.current_turn:
             AI_making_move = False
             if chess_board.generate_legal_moves():
               for i in range(8):
@@ -295,66 +305,65 @@ def main() -> None:
               winner = chess_board.winner()
               end_reason = "stalemate" if winner == -1 else "checkmate"
 
-        #draw the board.
-        total_screen.fill("white")
-        
+    #draw the board.
+    total_screen.fill("white")
+    
 
-        if in_main_menu:
-           white_button, black_button, plus_button, minus_button = draw_main_menu(timer_selector_time)
-           black_remaining_time = timer_selector_time * 60
-           white_remaining_time = timer_selector_time * 60
-        
-        elif not game_ended:
-          squares = draw_board()
+    if in_main_menu:
+        white_button, black_button, plus_button, minus_button = draw_main_menu(timer_selector_time)
+        black_remaining_time = timer_selector_time * 60
+        white_remaining_time = timer_selector_time * 60
+    
+    elif not game_ended:
+      squares = draw_board()
 
-          if chess_board.current_turn:
-            #subtracts time from white
-            white_remaining_time -= DeltaTime * 0.001
-            if white_remaining_time <= 0:
-              game_ended = True
-              end_reason = "timeout"
-              winner = False
-          
-          else:
-            #subtracts time from black
-            black_remaining_time -= DeltaTime * 0.001
-            if black_remaining_time <= 0:
-              game_ended = True
-              end_reason = "timeout"
-              winner = True
+      if chess_board.current_turn:
+        #subtracts time from white
+        white_remaining_time -= DeltaTime * 0.001
+        if white_remaining_time <= 0:
+          game_ended = True
+          end_reason = "timeout"
+          winner = False
+      
+      else:
+        #subtracts time from black
+        black_remaining_time -= DeltaTime * 0.001
+        if black_remaining_time <= 0:
+          game_ended = True
+          end_reason = "timeout"
+          winner = True
 
-          if human_player_colour != chess_board.current_turn and not AI_making_move: #if it is ai turn
-            if chess_board.generate_legal_moves():
-              AI_making_move = True
-              Thread(target=make_AI_move).start()
-            
-            else:
-              game_ended = True
-              winner = chess_board.winner()
-              end_reason = "stalemate" if winner == -1 else "checkmate"
-
-          #else:
-          #  move = chess_board.select_ai_move()
-          #  valid = chess_board.update_board(move[0], move[1])
+      if human_player_colour != chess_board.current_turn and not AI_making_move: #if it is ai turn
+        if chess_board.generate_legal_moves():
+          AI_making_move = True
+          Thread(target=make_AI_move).start()
         
         else:
-          squares = draw_board()
-          draw_win_lose(winner, end_reason)
+          game_ended = True
+          winner = chess_board.winner()
+          end_reason = "stalemate" if winner == -1 else "checkmate"
 
-        draw_timer(black_remaining_time ,white_remaining_time)
-        
-        total_screen.blit(screen, (0, 0))
-        total_screen.blit(timer_screen, (600, 0))
+      #else:
+      #  move = chess_board.select_ai_move()
+      #  valid = chess_board.update_board(move[0], move[1])
+    
+    else:
+      squares = draw_board()
+      return_button = draw_win_lose(winner, end_reason)
+
+    draw_timer(black_remaining_time ,white_remaining_time)
+    
+    total_screen.blit(screen, (0, 0))
+    total_screen.blit(timer_screen, (600, 0))
 
 
-        pygame.display.update()
-        #DeltaTime is the time between frames, will be used for timing
-        DeltaTime = clock.tick(24) #time between frames in ms
+    pygame.display.update()
+    #DeltaTime is the time between frames, will be used for timing
+    DeltaTime = clock.tick(24) #time between frames in ms
 
 def make_AI_move():
    move = chess_board.select_ai_move()
    valid = chess_board.update_board(move[0], move[1])
-   AI_making_move = False
 
 if __name__ == "__main__":
     main()
