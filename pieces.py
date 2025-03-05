@@ -356,6 +356,7 @@ class King(Piece):
 
     if not self.has_moved: #if king hasnt moved
       for direction in (-1, 1): #check left and right
+        self.position = original_position
         if self.check_detection(board): #if king being attacked
           break #king can't castle so break
 
