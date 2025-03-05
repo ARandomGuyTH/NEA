@@ -379,7 +379,8 @@ class Board:
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return 9999 if self.winner(board) else -9999
+      v =  9999 if self.winner(board) == 1 else 0 if self.winner(board) == -1  else -9999
+      return v
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
@@ -401,7 +402,8 @@ class Board:
     depth -= 1 #limit depth to not take too much time
     if self.terminal(board):
       #checks if game ends returns winner
-      return 9999 if self.winner(board) else -9999
+      v =  9999 if self.winner(board) == 1 else 0 if self.winner(board) == -1  else -9999
+      return v
 
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
