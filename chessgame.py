@@ -308,6 +308,12 @@ def main() -> None:
 
     #draw the board.
     total_screen.fill("white")
+    
+    if chess_board.AI_making_move:
+      current_turn = not human_player_colour
+    else:
+      current_turn = chess_board.current_turn
+
 
     if in_main_menu:
         white_button, black_button, plus_button, minus_button = draw_main_menu(timer_selector_time)
@@ -355,13 +361,6 @@ def main() -> None:
     
     total_screen.blit(screen, (0, 0))
     total_screen.blit(timer_screen, (600, 0))
-
-    if chess_board.AI_making_move:
-      current_turn = not human_player_colour
-    else:
-      current_turn = human_player_colour
-
-
 
     pygame.display.update()
     #DeltaTime is the time between frames, will be used for timing
