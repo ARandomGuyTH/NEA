@@ -182,19 +182,23 @@ def draw_timer(black_time : int, white_time : int) -> None:
 def draw_win_lose(winner : bool,type : str) -> pygame.Rect:
   #creates plus button
   background = pygame.Surface((500,350))  #create surface of size 232, 102
-  background.set_alpha(200)                #set transparent
+  background.set_alpha(200)                #set partially transparent
   background.fill((255,253,208))
   #creates and draws rect from surface
   screen.blit(background, (50,125))
 
   #creates back to menu button
-  background = pygame.Surface((35,35))  #create surface of size 232, 102
-  background.set_alpha(100)                #set transparent
-  background.fill((0,0,0))
+  background = pygame.Surface((260,80))  #create surface of size 35, 35
+  background.set_alpha(200)                #set partially ransparent
+  background.fill(BLACK_SQUARE_COLOUR)
   #creates and draws rect from surface
-  screen.blit(background, (300,300))
+  screen.blit(background, (170,300))
 
-  winner_text = "white wins" if winner else "draw" if winner == -1 else "black wins"
+  return_text = mediumFont.render("return to menu", True, (0, 0, 0)) #creates font
+  return_text_rect = return_text.get_rect(topleft = (190 , 320)) # creates rect around the font, moves to right spot
+  screen.blit(return_text, return_text_rect) #draws font onto screen
+  
+  winner_text = "white wins" if winner == 1 else "draw" if winner == -1 else "black wins"
   #creates time remaining text for white
   winner_text_box = mediumFont.render(f"{winner_text} : {type}", True, (0, 0, 0)) #creates font
   winner_time_rect = winner_text_box.get_rect(center = (300 , 200)) # creates rect around the font, moves to right spot
