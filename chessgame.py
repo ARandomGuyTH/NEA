@@ -309,10 +309,11 @@ def main() -> None:
     #draw the board.
     total_screen.fill("white")
     
-    if chess_board.AI_making_move:
-      current_turn = not human_player_colour
-    else:
-      current_turn = chess_board.current_turn
+    if chess_board.AI_making_move: #if the AI is making a move
+      current_turn = not human_player_colour #It is the AI's colour's turn
+    else: #if AI not making a move
+      #the chess board is not being edited in a seperate thread
+      current_turn = chess_board.current_turn #so chess board can be read
 
 
     if in_main_menu:
@@ -339,15 +340,16 @@ def main() -> None:
           end_reason = "timeout"
           winner = True
 
-      if human_player_colour != current_turn and not chess_board.AI_making_move: #if it is ai turn
-        if chess_board.generate_legal_moves():
-          chess_board.AI_making_move = True
-          Thread(target=make_AI_move).start()
+      #if it is ai turn and AI is not currently making a move on a thread
+      if human_player_colour != current_turn and not chess_board.AI_making_move: 
+        if chess_board.generate_legal_moves(): #if the AI has a move it can make
+          chess_board.AI_making_move = True #AI is making move, avoids multiple threads
+          Thread(target=make_AI_move).start() #create and start thread
         
-        else:
-          game_ended = True
-          winner = chess_board.winner()
-          end_reason = "stalemate" if winner == -1 else "checkmate"
+        else: #if no moves
+          game_ended = True #game has ended
+          winner = chess_board.winner() #find winner
+          end_reason = "stalemate" if winner == -1 else "checkmate" #find if stalemate or checkmate
 
       #else:
       #  move = chess_board.select_ai_move()
