@@ -382,20 +382,22 @@ class Board:
       v =  9999 if self.winner(board) == 1 else 0 if self.winner(board) == -1  else -9999
       return v
 
-    elif depth <= 0: #if depth reached return approximation
+    elif depth <= 0: #if depth reached return approximate value
       return self.evaluate(board)
 
-    v = float('inf')
+    v = float('inf') #worse case +inf (very big)
 
-    for move in self.generate_legal_moves(board):
+    for move in self.generate_legal_moves(board): #for each move player can make
+      #if move eval is smaller then current best move, current best move is eval
       v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
-      if v < alpha:
-        break
+      if v < alpha: #if move smaller then best maxi move eval
+        break #prune branch
 
+      #if if move smaller then best mini move eval move eval is best mini move eval
       beta = min(beta, v)
     
-    return v
+    return v #return to be used in maximise
   
   def maximise(self, board, depth, alpha, beta):
     self.current_turn = WHITE
@@ -408,17 +410,19 @@ class Board:
     elif depth <= 0: #if depth reached return approximation
       return self.evaluate(board)
 
-    v = float('-inf')
+    v = float('-inf') #worse case -inf (very small)
 
-    for move in self.generate_legal_moves(board):
+    for move in self.generate_legal_moves(board): #for each move player can make
+      #if move eval is bigger then current best move, current best move is eval
       v = max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
-      if v > beta:
-        break
+      if v > beta: #if move bigger then best mini move eval
+        break #prune branch
 
+       #if if move bigger then best maxi move eval move eval is best maxi move eval
       alpha = max(alpha, v)
     
-    return v
+    return v  #return to be used in minimise
 
 def main() -> None:
   """
