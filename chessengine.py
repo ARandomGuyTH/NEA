@@ -390,7 +390,7 @@ class Board:
     for move in self.generate_legal_moves(board):
       v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
-      if v <= alpha:
+      if v < alpha:
         break
 
       beta = min(beta, v)
@@ -413,7 +413,7 @@ class Board:
     for move in self.generate_legal_moves(board):
       v = max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
-      if v >= beta:
+      if v > beta:
         break
 
       alpha = max(alpha, v)
