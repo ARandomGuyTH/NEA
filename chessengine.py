@@ -188,7 +188,6 @@ class Board:
                 if not self.incheck((movefrx, movefry), (movetox, movetoy), board):
                   moves.append(((movefrx, movefry), (movetox, movetoy)))
 
-    self.quickSort(moves, 0, len(moves) - 1, board)
     return moves
   
   def score_move(self, move, board=None):
@@ -198,7 +197,8 @@ class Board:
       movefrx, movefry = move[0]
       motox, motoy = move[1]
       
-      if board[motox][motoy]: #prioritises capturing high value pieces with low value
+      if board[motox][motoy]: #check if the move invovles taking a piece
+        #prioritises capturing high value pieces with low value
         return 10 * board[motox][motoy].value - board[movefrx][movefry].value
       
       return 0
@@ -387,7 +387,10 @@ class Board:
 
     v = float('inf') #worse case +inf (very big)
 
-    for move in self.generate_legal_moves(board): #for each move player can make
+    moves = self.generate_legal_moves(board) #generate all moves
+    self.quickSort(moves, 0, len(moves) - 1, board) #move ordering
+
+    for move in moves: #for each move player can make
       #if move eval is smaller then current best move, current best move is eval
       v = min(v, self.maximise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
@@ -411,8 +414,11 @@ class Board:
       return self.evaluate(board)
 
     v = float('-inf') #worse case -inf (very small)
+    
+    moves = self.generate_legal_moves(board) #sort all moves
+    self.quickSort(moves, 0, len(moves) - 1, board) #move ordering
 
-    for move in self.generate_legal_moves(board): #for each move player can make
+    for move in moves: #for each move player can make
       #if move eval is bigger then current best move, current best move is eval
       v = max(v, self.minimise(self.force_move(move[0], move[1], deepcopy(board)), depth, alpha, beta))
       
