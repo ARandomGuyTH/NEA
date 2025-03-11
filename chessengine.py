@@ -35,6 +35,8 @@ class Board:
     self.find_kings()
     self.AI_making_move = False
 
+    self.nodes_searched = 0
+
   def create_board(self, FEN : str) -> list:
     """
     Takes in FEN as input. Returns the appropriate Board as a 2D list.
@@ -199,7 +201,7 @@ class Board:
       
       if board[motox][motoy]: #check if the move invovles taking a piece
         #prioritises capturing high value pieces with low value
-        return 10 * board[motox][motoy].value - board[movefrx][movefry].value
+        return -10 * board[motox][motoy].value + board[movefrx][movefry].value
       
       return 0
 
@@ -288,7 +290,7 @@ class Board:
       
     if self.current_turn:
       for move in moves:
-        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 4, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
             current_greatest_utility = v
@@ -296,7 +298,7 @@ class Board:
     
     else:
       for move in moves:
-        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
+        v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 4, float('-inf'), float('inf'))
         v = v * -1
 
         if v > current_greatest_utility:
