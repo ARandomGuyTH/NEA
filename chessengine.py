@@ -282,9 +282,12 @@ class Board:
     board = deepcopy(self.board)
     current_greatest_utility = float('-inf')
 
+    moves = self.generate_legal_moves(board) #generate all moves
+    self.quickSort(moves, 0, len(moves) - 1, board) #move ordering
+
       
     if self.current_turn:
-      for move in self.generate_legal_moves():
+      for move in moves:
         v = self.minimise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
 
         if v > current_greatest_utility:
@@ -292,7 +295,7 @@ class Board:
             current_best_move = move
     
     else:
-      for move in self.generate_legal_moves():
+      for move in moves:
         v = self.maximise(self.force_move(move[0], move[1], deepcopy(board)), 1, float('-inf'), float('inf'))
         v = v * -1
 
